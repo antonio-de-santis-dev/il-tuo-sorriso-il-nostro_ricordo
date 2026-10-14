@@ -23,13 +23,11 @@ Sito dell'associazione di volontariato di Martano (LE).
 
 ## Prototipo
 
-Sito statico HTML/CSS/JS, senza dipendenze. Va servito da un server locale (i link sono relativi):
+Sito statico HTML/CSS/JS, senza dipendenze e **senza bisogno di server**: basta aprire `design/mockup/index.html` con un doppio clic (o trascinarlo nel browser). Tutti i link funzionano anche così.
 
-```bash
-npx serve -l 8765 design          # oppure: python3 -m http.server 8765 --directory design
-```
+Il server locale serve **solo** per i test automatici (`design/tests/e2e.js`). Gli indirizzi qui sotto valgono in quel caso; aprendo i file direttamente, la parte dopo `/mockup/` è la stessa.
 
-| Pagina | URL locale |
+| Pagina | URL (con server di test) |
 |---|---|
 | Home | http://localhost:8765/mockup/index.html (`?intro` per rivedere l'animazione) |
 | Beneficenza | http://localhost:8765/mockup/beneficenza.html |
