@@ -118,8 +118,8 @@ async function suite(engine, b, vpName, opts) {
   await p.click('.related__card'); await p.waitForLoadState();
   ok(`[${vp}] evento → beneficenza collegata`, /beneficenza-articolo/.test(p.url()));
   await p.goBack(); await p.click('.gallery-cta'); await p.waitForLoadState();
-  ok(`[${vp}] evento → album (anteprima)`, /album\.html\?slug=memorial-2025/.test(p.url()));
-  ok(`[${vp}] album Memorial: anteprima, nessuna foto inventata`, await p.isVisible('.empty') && (await p.$$('.tile')).length === 0 && /non ancora caricate/i.test(await p.textContent('main')));
+  ok(`[${vp}] evento → album`, /album\.html\?slug=memorial-2025/.test(p.url()));
+  ok(`[${vp}] album Memorial: 48 foto segnaposto etichettate come dimostrative`, (await p.$$('.tile')).length === 48 && /Foto dimostrative/i.test(await p.textContent('.page-head')));
   ok(`[${vp}] album → evento (link inverso)`, (await p.$$('a[href="evento.html?slug=memorial-2025"]')).length === 1);
   await p.goto(B + 'eventi.html'); await shot('eventi', true); await noOverflow('eventi');
   ok(`[${vp}] eventi: stato vuoto "Prossimi"`, await p.isVisible('.empty'));
@@ -147,11 +147,13 @@ async function suite(engine, b, vpName, opts) {
 
   // 4. Home → foto → catalogo → album → lightbox → selezione
   await p.goto(B + 'index.html'); await p.click('.stack'); await p.waitForLoadState();
-  ok(`[${vp}] home → catalogo foto: solo l'album dell'evento reale`, p.url().endsWith('foto.html') && (await p.$$('#albums .acard')).length === 1 && /Memorial 2025/.test(await p.textContent('#albums')));
-  ok(`[${vp}] catalogo: nessun album fittizio nel pubblico`, !(await p.evaluate(() => /fittizio/i.test(document.querySelector('#albums').innerText))));
+  // catalogo come in feature/completamento-mockup: tutti gli album pubblicati in un'unica griglia
+  ok(`[${vp}] home → catalogo foto con 3 album`, p.url().endsWith('foto.html') && (await p.$$('#albums .acard')).length === 3);
+  ok(`[${vp}] catalogo: album dell'evento per primo, album di prova etichettati`, await p.evaluate(() => { const c = [...document.querySelectorAll('#albums .acard')]; return /Memorial 2025/i.test(c[0].innerText) && /Foto dimostrative/i.test(c[0].innerText) && c.slice(1).every(x => /fittizio/i.test(x.innerText)); }));
+  const hrefs = await p.$$eval('#albums .acard__link', l => l.map(a => a.getAttribute('href')));
+  for (const h of hrefs) { await p.goto(B + h); ok(`[${vp}] la card apre l'album giusto: ${h}`, (await p.textContent('h1')).length > 0 && p.url().endsWith(h)); }
+  await p.goto(B + 'foto.html');
   await shot('foto-catalogo', true); await noOverflow('catalogo');
-  await p.click('.review-link a'); await p.waitForLoadState();
-  ok(`[${vp}] catalogo in revisione: album fittizi separati ed etichettati`, /foto\.html\?demo=1/.test(p.url()) && (await p.$$('.group--draft .acard')).length === 2);
   await p.click('.acard a[href="album.html?slug=demo-album-grande"]'); await p.waitForLoadState();
   ok(`[${vp}] album dimostrativo: etichettato e 48 foto caricate`, /fittizio/i.test(await p.textContent('.page-head')) && (await p.$$('.tile')).length === 48);
   await p.click('#load-more'); ok(`[${vp}] album: "Carica altre"`, (await p.$$('.tile')).length === 96);
@@ -200,7 +202,7 @@ async function suite(engine, b, vpName, opts) {
   ok('[reduced-motion] nessuna intro, nessun blocco', await p.evaluate(() => document.querySelector('.hero').classList.contains('is-done') && !document.documentElement.classList.contains('intro-lock')));
 
   // Link morti su tutte le pagine
-  const pages = ['index.html', 'index.html?carosello=produzione', 'evento.html?slug=torneo-calcio-6-simone-2024', 'beneficenza.html', 'beneficenza-articolo.html?slug=donazione-spdc-scorrano-2025', 'eventi.html', 'eventi.html?bozze=1', 'evento.html?slug=memorial-2025', 'foto.html', 'album.html?slug=memorial-2025', 'album.html?slug=demo-album-grande', 'foto.html?demo=1', 'privacy.html'];
+  const pages = ['index.html', 'index.html?carosello=produzione', 'evento.html?slug=torneo-calcio-6-simone-2024', 'beneficenza.html', 'beneficenza-articolo.html?slug=donazione-spdc-scorrano-2025', 'eventi.html', 'eventi.html?bozze=1', 'evento.html?slug=memorial-2025', 'foto.html', 'album.html?slug=memorial-2025', 'album.html?slug=demo-album-grande', 'privacy.html'];
   const dead = [];
   for (const pg of pages) {
     await p.goto(B + pg);

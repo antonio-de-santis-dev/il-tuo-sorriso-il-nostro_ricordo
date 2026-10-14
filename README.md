@@ -2,12 +2,13 @@
 
 Sito dell'associazione di volontariato di Martano (LE).
 
-**Stato: rifinitura di Beneficenza ed Eventi** (branch `fix/ultima`). Questo repository contiene specifiche e mockup da approvare. Il codice applicativo (React + Node.js) verrà scritto solo dopo l'approvazione dei mockup.
+**Stato: Mockup completo V1, pronto per la revisione finale** (branch `mokup/copmpletoV1`). Report: [docs/REPORT_MOCKUP_COMPLETOV1.md](docs/REPORT_MOCKUP_COMPLETOV1.md). Questo repository contiene specifiche e mockup da approvare. Il codice applicativo (React + Node.js) verrà scritto solo dopo l'approvazione dei mockup.
 
 ## Documenti
 
 | File | Contenuto |
 |---|---|
+| [docs/REPORT_MOCKUP_COMPLETOV1.md](docs/REPORT_MOCKUP_COMPLETOV1.md) | **Mockup completo V1**: base, galleria ripristinata, test |
 | [docs/PRODUCT.md](docs/PRODUCT.md) | Obiettivi, utenti, fatti accertati, criticità, dati mancanti |
 | [docs/DESIGN.md](docs/DESIGN.md) | Design system: colori, contrasti, font, componenti, movimento |
 | [docs/HERO_ANALISI.md](docs/HERO_ANALISI.md) | Analisi dei due file della Hero e animazione d'ingresso |
@@ -39,7 +40,6 @@ Il server locale serve **solo** per i test automatici (`design/tests/e2e.js`). G
 | Privacy | http://localhost:8765/mockup/privacy.html |
 | Revisione: bozze eventi | http://localhost:8765/mockup/eventi.html?bozze=1 |
 | Anteprima carosello in modalità produzione (solo iniziative verificate) | http://localhost:8765/mockup/index.html?carosello=produzione#beneficenza |
-| Revisione: album fittizi di prova | http://localhost:8765/mockup/foto.html?demo=1 |
 
 File principali in `design/mockup/`: `data.js` (catalogo contenuti), `site.js` (navbar, footer, schede comuni), `mockup.js` (Home), `pages.js` (pagine interne), `tokens.css`, `mockup.css`, `pages.css`.
 
@@ -61,3 +61,7 @@ Modifiche visive e funzionali **solo** a Beneficenza ed Eventi (Home e pagine in
 Nuovi file isolati: `design/mockup/sezioni.css` e `sezioni.js`, caricati solo da index, beneficenza, beneficenza-articolo, eventi, evento. File della galleria non toccati.
 
 Test: `node design/tests/e2e.js` → 203/203 e `node design/tests/carosello.js` → 59/59 su Chromium, desktop, tablet e mobile (WebKit non disponibile in questo ambiente). Screenshot `design/screenshots/ult-*`.
+
+## Branch `mokup/copmpletoV1` — mockup completo V1
+
+Versione consolidata: tutto il lavoro di `fix/ultima` (carosello Beneficenza, Eventi, archivi, articoli) + **galleria fotografica ripristinata** all'interfaccia di `feature/completamento-mockup` (catalogo con 3 album in griglia, copertine colorate, album Memorial con 48 foto segnaposto). Screenshot del catalogo identici al pixel all'originale. Dettagli e test: [docs/REPORT_MOCKUP_COMPLETOV1.md](docs/REPORT_MOCKUP_COMPLETOV1.md).

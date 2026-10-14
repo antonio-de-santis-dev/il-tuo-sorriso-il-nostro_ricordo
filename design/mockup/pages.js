@@ -177,16 +177,9 @@
 
   /* ---------- /foto ---------- */
   if (page === 'foto') {
-    // Catalogo pubblico: solo album legati a eventi reali. Gli album fittizi solo in revisione (?demo=1).
-    const review = param('demo') === '1';
-    const albums = D.albums.filter(a => a.published && !a.reviewOnly);
-    const demos = D.albums.filter(a => a.published && a.reviewOnly);
+    const albums = D.albums.filter(a => a.published).sort((a, b) => (b.event ? 1 : 0) - (a.event ? 1 : 0));
     $('#albums').innerHTML = albums.length ? albums.map(S.albumCard).join('')
       : `<li>${empty('Nessun album pubblicato', 'Gli album arriveranno dopo il prossimo evento.')}</li>`;
-    $('#albums').insertAdjacentHTML('afterend', review
-      ? `<section class="group group--draft" aria-labelledby="g-demo"><h2 class="group-title" id="g-demo">Album fittizi <small>solo revisione: servono a provare le funzioni della galleria</small></h2>
-          <ul class="album-grid">${demos.map(S.albumCard).join('')}</ul></section>`
-      : `<p class="review-link"><a href="foto.html?demo=1">Revisione: mostra gli album fittizi di prova</a></p>`);
   }
 
   /* ---------- /foto/:slug ---------- */
@@ -208,7 +201,7 @@
     <section class="page-head" aria-labelledby="page-title"><div class="wrap">
       ${crumbs([['index.html', 'Home'], ['foto.html', 'Foto'], [null, a.name]])}
       <h1 id="page-title" class="h2">${esc(a.name)}</h1>
-      <p class="album-meta">${a.dateLabel ? `<span>${esc(a.dateLabel)}</span>` : ''}<span>${N ? `${N} foto segnaposto` : 'Nessuna foto'}</span>
+      <p class="album-meta">${a.dateLabel ? `<span>${esc(a.dateLabel)}</span>` : ''}<span>${N ? `${N} foto` : 'Nessuna foto'}</span>
         <span class="tag-prov">${a.fictional ? 'Album fittizio di prova' : a.preview ? 'Anteprima · foto non ancora caricate' : 'Foto dimostrative'}</span>
         ${ev ? `<a class="link-arrow" href="${url.event(ev.slug)}">Vai all’evento <span aria-hidden="true">→</span></a>` : ''}</p>
       <p class="note-prov">${esc(a.note)}</p>

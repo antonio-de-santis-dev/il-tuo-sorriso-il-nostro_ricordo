@@ -91,16 +91,16 @@
     ],
 
     /* Album: nessuna foto reale. In Fase B arriveranno da Google Drive.
-       reviewOnly = album fittizi per provare le funzioni della galleria: fuori dal catalogo pubblico,
-       visibili solo in revisione (foto.html?demo=1). */
+       Elenco come in feature/completamento-mockup (interfaccia galleria approvata):
+       Memorial con foto segnaposto dichiarate + album fittizi di prova, tutti nel catalogo. */
     albums: [
-      { slug: 'memorial-2025', name: 'Memorial 2025', dateLabel: '21 agosto 2025', event: 'memorial-2025', published: true, preview: true, demoCount: 0,
-        note: 'Anteprima: le foto dell’evento non sono ancora state caricate.' },
-      { slug: 'demo-album-grande', reviewOnly: true, name: 'Album dimostrativo: tante foto', dateLabel: null, event: null, published: true, demoCount: 240, fictional: true,
-        note: 'Album FITTIZIO con foto segnaposto, per provare griglia, selezione, visualizzatore e caricamento a blocchi.' },
-      { slug: 'demo-album-vuoto', reviewOnly: true, name: 'Album dimostrativo: in preparazione', dateLabel: null, event: null, published: true, demoCount: 0, fictional: true,
+      { slug: 'memorial-2025', name: 'Memorial 2025', dateLabel: '21 agosto 2025', event: 'memorial-2025', published: true, demoCount: 48, demo: true,
+        note: 'Album collegato all’evento reale; le foto sono segnaposto dimostrativi.' },
+      { slug: 'demo-album-grande', name: 'Album dimostrativo: tante foto', dateLabel: null, event: null, published: true, demoCount: 240, demo: true, fictional: true,
+        note: 'Album FITTIZIO per provare il caricamento a blocchi di un album molto grande.' },
+      { slug: 'demo-album-vuoto', name: 'Album dimostrativo: in preparazione', dateLabel: null, event: null, published: true, demoCount: 0, demo: true, fictional: true,
         note: 'Album FITTIZIO per mostrare lo stato “nessuna foto ancora”.' },
-      { slug: 'demo-non-pubblicato', name: 'Album non pubblicato', dateLabel: null, event: null, published: false, demoCount: 12, fictional: true,
+      { slug: 'demo-non-pubblicato', name: 'Album non pubblicato', dateLabel: null, event: null, published: false, demoCount: 12, demo: true, fictional: true,
         note: 'Non compare nel catalogo: aprendo il link diretto si vede lo stato “album non disponibile”.' }
     ],
 

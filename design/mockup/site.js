@@ -156,12 +156,12 @@
       <a class="acard__link" href="${url.album(a.slug)}">
         <span class="acard__pile" aria-hidden="true">
           <span class="acard__print acard__print--2"></span>
-          <span class="acard__print acard__print--1${a.preview ? ' acard__print--empty' : ''}"${a.preview ? '' : ` style="background:${tile(a.slug.length)}"`}></span>
+          <span class="acard__print acard__print--1" style="background:${tile(a.slug.length)}"></span>
         </span>
         <span class="acard__body">
-          <span class="tag-prov">${a.fictional ? 'Album fittizio di prova' : a.preview ? 'Anteprima · foto non ancora caricate' : 'Foto dimostrative'}</span>
+          ${a.fictional ? '<span class="tag-prov">Album fittizio di prova</span>' : '<span class="tag-prov">Foto dimostrative</span>'}
           <span class="acard__title">${esc(a.name)}</span>
-          <span class="acard__meta">${a.dateLabel ? esc(a.dateLabel) + ' · ' : ''}${a.preview ? 'Foto non ancora caricate' : a.demoCount ? `${a.demoCount} foto segnaposto` : 'Nessuna foto ancora'}</span>
+          <span class="acard__meta">${a.dateLabel ? esc(a.dateLabel) + ' · ' : ''}${a.demoCount ? `${a.demoCount} foto (valore dimostrativo)` : 'Nessuna foto ancora'}</span>
         </span>
       </a>
     </li>`;
