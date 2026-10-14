@@ -4,7 +4,7 @@
    Ogni fonte ha data di consultazione e stato di verifica.
    Inventario completo: docs/RICERCA_FONTI_EVENTI_BENEFICENZA.md */
 (() => {
-  const CHECKED = '14/10/2026';
+  const CHECKED = '14/10/2026'; // ultima verifica: stessa data, secondo passaggio di ricerca
   // Stato di verifica delle fonti (vedi legenda nel documento di ricerca)
   const EXCERPT = 'estratto da motore di ricerca: pagina non apribile dall’ambiente di lavoro';
   const BLOCKED = 'non accessibile dall’ambiente di lavoro';
@@ -15,7 +15,7 @@
     cs2: { name: 'Corriere Salentino', date: '14/12/2025', url: 'https://www.corrieresalentino.it/2025/12/allospedale-veris-delli-ponti-di-scorrano-la-cerimonia-di-donazione-dellassociazione-il-tuo-sorriso-il-nostro-ricordo/', checked: CHECKED, status: EXCERPT },
     agenparl: { name: 'Agenparl (comunicato ASL Lecce)', date: '12/12/2025', url: 'https://agenparl.eu/2025/12/12/asl-lecce-donazione-al-reparto-di-psichiatria-dellospedale-di-scorrano-da-parte-dellassociazione-il-tuo-sorriso-il-nostro-ricordo/', checked: CHECKED, status: EXCERPT },
     gdp: { name: 'Giornale di Puglia', date: 'dicembre 2025', url: 'https://www.giornaledipuglia.com/2025/12/allospedale-veris-delli-ponti-di.html', checked: CHECKED, status: EXCERPT },
-    lecceprima: { name: 'LeccePrima', date: '12/12/2025 (dall’indirizzo)', url: 'https://www.lecceprima.it/salute/donazione-reparto-scorrano-12-dicembre-2025.html', checked: CHECKED, status: BLOCKED },
+    lecceprima: { name: 'LeccePrima', date: '12/12/2025 (dall’indirizzo)', url: 'https://www.lecceprima.it/salute/donazione-reparto-scorrano-12-dicembre-2025.html', checked: CHECKED, status: EXCERPT },
     grecia: { name: 'Grecìa ta nea-ma', date: '11/06/2024', url: 'https://greciataneama.it/news/notizie/sport/il-tuo-sorriso-il-nostro-ricordo-a-martano-to/40', checked: CHECKED, status: BLOCKED + ' (dati dalla ricerca preliminare del committente)' }
   };
 
@@ -65,7 +65,7 @@
         initiative: 'donazione-spdc-scorrano-2025',
         initiativeRelation: 'Raccolta fondi per',
         album: 'memorial-2025',
-        sources: [SRC.gallo, SRC.agenparl],
+        sources: [SRC.gallo, SRC.agenparl, SRC.lecceprima],
         provisional: ['nome ufficiale dell’evento', 'luogo', 'programma', 'locandina']
       },
       {
@@ -88,13 +88,15 @@
       }
     ],
 
-    /* Album: nessuna foto reale. In Fase B arriveranno da Google Drive. */
+    /* Album: nessuna foto reale. In Fase B arriveranno da Google Drive.
+       reviewOnly = album fittizi per provare le funzioni della galleria: fuori dal catalogo pubblico,
+       visibili solo in revisione (foto.html?demo=1). */
     albums: [
       { slug: 'memorial-2025', name: 'Memorial 2025', dateLabel: '21 agosto 2025', event: 'memorial-2025', published: true, preview: true, demoCount: 0,
         note: 'Anteprima: le foto dell’evento non sono ancora state caricate.' },
-      { slug: 'demo-album-grande', name: 'Album dimostrativo: tante foto', dateLabel: null, event: null, published: true, demoCount: 240, fictional: true,
+      { slug: 'demo-album-grande', reviewOnly: true, name: 'Album dimostrativo: tante foto', dateLabel: null, event: null, published: true, demoCount: 240, fictional: true,
         note: 'Album FITTIZIO con foto segnaposto, per provare griglia, selezione, visualizzatore e caricamento a blocchi.' },
-      { slug: 'demo-album-vuoto', name: 'Album dimostrativo: in preparazione', dateLabel: null, event: null, published: true, demoCount: 0, fictional: true,
+      { slug: 'demo-album-vuoto', reviewOnly: true, name: 'Album dimostrativo: in preparazione', dateLabel: null, event: null, published: true, demoCount: 0, fictional: true,
         note: 'Album FITTIZIO per mostrare lo stato “nessuna foto ancora”.' },
       { slug: 'demo-non-pubblicato', name: 'Album non pubblicato', dateLabel: null, event: null, published: false, demoCount: 12, fictional: true,
         note: 'Non compare nel catalogo: aprendo il link diretto si vede lo stato “album non disponibile”.' }

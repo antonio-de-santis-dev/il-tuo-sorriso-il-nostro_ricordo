@@ -19,6 +19,7 @@
     list.innerHTML = items.length
       ? items.map(i => `<li>${S.initiativeCard(i)}</li>`).join('')
       : `<li>${empty('Nessuna iniziativa pubblicata', 'Le iniziative compariranno qui dopo l’approvazione dei testi.')}</li>`;
+    if (items.length === 1) list.insertAdjacentHTML('afterend', `<div class="note-prov" style="margin-top:var(--s-6)"><strong>Nota redazionale (non pubblicabile):</strong> a oggi è documentata una sola iniziativa di beneficenza dell’associazione. Non c’è base sufficiente per altre schede: verranno aggiunte solo con fonti o materiali forniti dall’associazione.</div>`);
   }
 
   /* ---------- /beneficenza/:slug ---------- */
@@ -124,9 +125,16 @@
 
   /* ---------- /foto ---------- */
   if (page === 'foto') {
-    const albums = D.albums.filter(a => a.published).sort((a, b) => (b.event ? 1 : 0) - (a.event ? 1 : 0));
+    // Catalogo pubblico: solo album legati a eventi reali. Gli album fittizi solo in revisione (?demo=1).
+    const review = param('demo') === '1';
+    const albums = D.albums.filter(a => a.published && !a.reviewOnly);
+    const demos = D.albums.filter(a => a.published && a.reviewOnly);
     $('#albums').innerHTML = albums.length ? albums.map(S.albumCard).join('')
       : `<li>${empty('Nessun album pubblicato', 'Gli album arriveranno dopo il prossimo evento.')}</li>`;
+    $('#albums').insertAdjacentHTML('afterend', review
+      ? `<section class="group group--draft" aria-labelledby="g-demo"><h2 class="group-title" id="g-demo">Album fittizi <small>solo revisione: servono a provare le funzioni della galleria</small></h2>
+          <ul class="album-grid">${demos.map(S.albumCard).join('')}</ul></section>`
+      : `<p class="review-link"><a href="foto.html?demo=1">Revisione: mostra gli album fittizi di prova</a></p>`);
   }
 
   /* ---------- /foto/:slug ---------- */
@@ -161,7 +169,7 @@
     <div class="wrap"><ul class="grid" id="grid" aria-label="Foto dell’album"></ul>
       <div class="more" id="more"></div></div>`
     : `<div class="page-body"><div class="wrap">${a.preview
-        ? empty('Foto non ancora caricate', 'Le foto di questo evento arriveranno appena l’associazione le avrà raccolte e autorizzate. Per provare griglia, selezione e download simulati apri l’<a href="album.html?slug=demo-album-grande">album dimostrativo</a>.')
+        ? empty('Foto non ancora caricate', 'Le foto di questo evento arriveranno appena l’associazione le avrà raccolte e autorizzate. Per provare griglia, selezione e download simulati c’è un <a href="album.html?slug=demo-album-grande">album fittizio di prova</a> (solo revisione).')
         : empty('Nessuna foto ancora', 'L’album è stato creato ma le foto non sono ancora state caricate. Torna a trovarci dopo l’evento.')}
         <p><a class="back-link" href="foto.html"><span aria-hidden="true">←</span> Tutti gli album</a></p></div></div>`}`;
     if (!N) return;

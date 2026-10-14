@@ -76,3 +76,36 @@ instagram.com/ilvostrosorrisoilnostroricordo · facebook.com/groups/546155726566
 4. Memorial 2025: luogo, programma e locandina mancanti.
 5. Discrepanza sul numero dei televisori (9 o 8) e sulla data di pubblicazione di Il Gallo (12/12 o 16/12/2025).
 6. Le note redazionali (es. la discrepanza sui televisori) sono visibili nel mockup con l'etichetta “non pubblicabili”: in produzione staranno solo nel sistema redazionale.
+
+---
+
+# Correzione — branch `fix/integrazione-contenuti-mockup` (14/10/2026)
+
+Creato da `origin/feature/contenuti-reali-mockup` @ `51ac692`; il branch precedente non è stato modificato. Nessun merge, nessun deploy.
+
+## Esito della nuova ricerca
+- **Accesso:** social, testate e Google Drive restano bloccati (proxy di rete / *Forbidden*). Dettagli e link precisi in `INVENTARIO_CONTENUTI.md` §0.
+- **Nuovo:** un estratto di LeccePrima conferma l'identità dell'associazione (nata in ricordo di Francesca e Simone) e la donazione. È stato aggiunto come fonte del Memorial.
+- **Nessuna nuova iniziativa o evento** dell'associazione trovato. Gli eventi solidali trovati a Martano e Scorrano appartengono ad altre associazioni e sono stati scartati.
+- Conclusione: **non c'è base sufficiente per più di una card di beneficenza reale**. L'archivio lo dice esplicitamente con una nota redazionale.
+
+## Correzioni al mockup
+| File | Modifica |
+|---|---|
+| `design/mockup/data.js` | LeccePrima passa da “non accessibile” a “estratto” ed è aggiunta tra le fonti del Memorial; album fittizi marcati `reviewOnly` |
+| `design/mockup/pages.js` | `foto.html` pubblico mostra **solo l'album dell'evento reale** (Memorial, in anteprima); gli album fittizi sono visibili solo in revisione (`foto.html?demo=1`), separati ed etichettati. `beneficenza.html` spiega perché c'è una sola card. Il link dall'album in anteprima all'album di prova è etichettato “solo revisione” |
+| `design/tests/e2e.js` | Nuovi controlli: catalogo pubblico senza album fittizi, revisione separata, nota sull'unica iniziativa, tutte le immagini caricate, prestazioni essenziali della Home |
+| `docs/INVENTARIO_CONTENUTI.md` | **Nuovo**: inventario con le colonne richieste e tabella trovati → integrati → non integrati |
+| `README.md`, questo report | Aggiornati |
+
+Grafica, intro, navbar e responsive: **invariati**.
+
+## Test realmente eseguiti
+`node design/tests/e2e.js` su server statico locale: **185/185 PASS** (Chromium; desktop 1440×900, tablet 768×1024, mobile 390×844). WebKit non installato → `SKIP` dichiarato.
+Prestazioni Home (desktop, server locale): DOMContentLoaded 82 ms, 8 richieste locali, ~0,93 MB di risorse locali (quasi tutte le due immagini dell'illustrazione). Il CLS non è stato misurato in modo affidabile in questo test.
+
+## Questioni da approvare
+1. Fornire export, screenshot e locandine dei social, oppure sbloccare i domini (vedi `INVENTARIO_CONTENUTI.md` §3).
+2. Conferma del ruolo dell'associazione nel torneo 2024.
+3. Luogo, programma e locandina del Memorial 2025.
+4. Numero dei televisori (9 o 8) e autorizzazione delle foto della consegna.

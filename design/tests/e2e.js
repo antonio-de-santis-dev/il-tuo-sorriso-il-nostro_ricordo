@@ -66,7 +66,20 @@ async function suite(engine, b, vpName, opts) {
   ok(`[${vp}] home: nessun importo €`, !(await p.evaluate(() => /€|3\.000|euro/i.test(document.body.innerText))));
   ok(`[${vp}] home: 1 iniziativa, frecce e puntini nascosti`, await p.evaluate(() => document.querySelectorAll('#charity-track .ccard').length === 1 && getComputedStyle(document.querySelector('.carousel-ctrl')).display === 'none'));
   ok(`[${vp}] home: nessuna bozza`, !(await p.evaluate(() => /Torneo di calcio/.test(document.body.innerText))));
+  ok(`[${vp}] immagini: tutte caricate`, await p.evaluate(() => [...document.images].every(i => i.complete && i.naturalWidth > 0)));
   await shot('home-full', true);
+  if (engine === 'chromium' && vpName === 'desktop') {
+    const perf = await p.evaluate(() => {
+      const nav = performance.getEntriesByType('navigation')[0];
+      const res = performance.getEntriesByType('resource');
+      const local = res.filter(r => r.name.startsWith(location.origin));
+      return { dcl: Math.round(nav.domContentLoadedEventEnd), bytes: local.reduce((t, r) => t + (r.transferSize || r.encodedBodySize || 0), 0), requests: local.length,
+        cls: performance.getEntriesByType('layout-shift')?.reduce?.((t, e) => t + (e.hadRecentInput ? 0 : e.value), 0) ?? 0 };
+    });
+    ok(`[${vp}] prestazioni: DOMContentLoaded < 1500 ms in locale`, perf.dcl < 1500, JSON.stringify(perf));
+    ok(`[${vp}] prestazioni: risorse locali della Home < 1,5 MB`, perf.bytes < 1.5e6, JSON.stringify(perf));
+    results.push(`INFO  prestazioni Home (desktop, server locale): ${JSON.stringify(perf)}`);
+  }
 
   // 2. Home → beneficenza → articolo → archivio → Home
   await p.click('#charity-track .btn'); await p.waitForLoadState();
@@ -78,6 +91,7 @@ async function suite(engine, b, vpName, opts) {
   await shot('beneficenza-articolo', true); await noOverflow('articolo');
   await p.click('.crumbs a[href="beneficenza.html"]'); await p.waitForLoadState();
   ok(`[${vp}] archivio beneficenza`, p.url().endsWith('beneficenza.html') && (await p.$$('.ccard')).length === 1);
+  ok(`[${vp}] archivio: spiegata l'unica iniziativa documentata`, /una sola iniziativa/.test(await p.textContent('main')));
   await shot('beneficenza', true); await noOverflow('archivio beneficenza');
   await p.goBack(); ok(`[${vp}] tasto indietro`, /beneficenza-articolo/.test(p.url()));
   await p.goto(B + 'beneficenza.html');
@@ -110,8 +124,11 @@ async function suite(engine, b, vpName, opts) {
 
   // 4. Home → foto → catalogo → album → lightbox → selezione
   await p.goto(B + 'index.html'); await p.click('.stack'); await p.waitForLoadState();
-  ok(`[${vp}] home → catalogo foto`, p.url().endsWith('foto.html') && (await p.$$('.acard')).length === 3);
+  ok(`[${vp}] home → catalogo foto: solo l'album dell'evento reale`, p.url().endsWith('foto.html') && (await p.$$('#albums .acard')).length === 1 && /Memorial 2025/.test(await p.textContent('#albums')));
+  ok(`[${vp}] catalogo: nessun album fittizio nel pubblico`, !(await p.evaluate(() => /fittizio/i.test(document.querySelector('#albums').innerText))));
   await shot('foto-catalogo', true); await noOverflow('catalogo');
+  await p.click('.review-link a'); await p.waitForLoadState();
+  ok(`[${vp}] catalogo in revisione: album fittizi separati ed etichettati`, /foto\.html\?demo=1/.test(p.url()) && (await p.$$('.group--draft .acard')).length === 2);
   await p.click('.acard a[href="album.html?slug=demo-album-grande"]'); await p.waitForLoadState();
   ok(`[${vp}] album dimostrativo: etichettato e 48 foto caricate`, /fittizio/i.test(await p.textContent('.page-head')) && (await p.$$('.tile')).length === 48);
   await p.click('#load-more'); ok(`[${vp}] album: "Carica altre"`, (await p.$$('.tile')).length === 96);
@@ -163,7 +180,7 @@ async function suite(engine, b, vpName, opts) {
   ok('[reduced-motion] nessuna intro, nessun blocco', await p.evaluate(() => document.querySelector('.hero').classList.contains('is-done') && !document.documentElement.classList.contains('intro-lock')));
 
   // Link morti su tutte le pagine
-  const pages = ['index.html', 'index.html?demo=carosello', 'beneficenza.html', 'beneficenza-articolo.html?slug=donazione-spdc-scorrano-2025', 'eventi.html', 'eventi.html?bozze=1', 'evento.html?slug=memorial-2025', 'evento.html?slug=torneo-calcio-6-simone-2024', 'foto.html', 'album.html?slug=memorial-2025', 'album.html?slug=demo-album-grande', 'privacy.html'];
+  const pages = ['index.html', 'index.html?demo=carosello', 'beneficenza.html', 'beneficenza-articolo.html?slug=donazione-spdc-scorrano-2025', 'eventi.html', 'eventi.html?bozze=1', 'evento.html?slug=memorial-2025', 'evento.html?slug=torneo-calcio-6-simone-2024', 'foto.html', 'album.html?slug=memorial-2025', 'album.html?slug=demo-album-grande', 'foto.html?demo=1', 'privacy.html'];
   const dead = [];
   for (const pg of pages) {
     await p.goto(B + pg);
