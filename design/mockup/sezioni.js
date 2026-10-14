@@ -6,24 +6,23 @@ window.Sezioni = (() => {
   const pad = n => String(n).padStart(2, '0');
 
   /* ---------- CAROSELLO BENEFICENZA ----------
-     Scroll nativo con snap (swipe su touch) + frecce, puntini cliccabili, contatore,
-     tastiera (← → Home Fine), trascinamento col mouse, scheda attiva in evidenza. */
+     Funziona con qualsiasi numero di card (generate da data.js).
+     Scroll orizzontale nativo con snap: animazione fluida, swipe su touch, nessuno spostamento della pagina.
+     Frecce laterali con navigazione circolare (dopo l'ultima si torna alla prima), indicatori cliccabili,
+     contatore, tastiera (← → Home Fine), trascinamento col mouse, clic su una card laterale.
+     Con una sola card (modalità produzione) frecce e indicatori vengono nascosti. */
   function carousel(section) {
     const track = section.querySelector('.carousel');
     const slides = [...track.querySelectorAll('.ccard')];
     const n = slides.length;
-    const [prev, next] = section.querySelectorAll('.carousel-ctrl .icon-btn');
-    const dotsList = section.querySelector('.dots');
+    const prev = section.querySelector('.carrow--prev'), next = section.querySelector('.carrow--next');
+    const dotsList = section.querySelector('.dots'), count = section.querySelector('.carousel-count');
     section.classList.toggle('charity--single', n < 2);
     if (n < 2) { slides[0]?.classList.add('is-active'); return; }
 
-    dotsList.removeAttribute('aria-hidden');
-    dotsList.setAttribute('aria-label', 'Scegli la scheda');
-    dotsList.innerHTML = slides.map((_, i) => `<li><button type="button" class="dots__btn" aria-label="Vai alla scheda ${i + 1} di ${n}"></button></li>`).join('');
+    dotsList.innerHTML = slides.map((s, i) => `<li><button type="button" class="dots__btn" aria-controls="charity-track" aria-label="Vai alla scheda ${i + 1} di ${n}${s.classList.contains('ccard--demo') ? ' (demo)' : ''}"></button></li>`).join('');
     const dots = [...dotsList.querySelectorAll('button')];
-    dotsList.insertAdjacentHTML('afterend', `<p class="carousel-count" aria-live="polite"><span class="carousel-count__now">01</span> / ${pad(n)}</p>`);
-    const count = section.querySelector('.carousel-count__now');
-    track.insertAdjacentHTML('afterend', '<p class="carousel-hint" aria-hidden="true">Scorri per vedere le altre schede <span>→</span></p>');
+    section.querySelector('.cshell').insertAdjacentHTML('beforeend', '<p class="carousel-hint" aria-hidden="true">Scorri o usa le frecce per vedere le altre schede</p>');
 
     const offset = i => slides[i].offsetLeft - slides[0].offsetLeft;
     const current = () => {
@@ -31,41 +30,46 @@ window.Sezioni = (() => {
       slides.forEach((_, i) => { const dd = Math.abs(offset(i) - track.scrollLeft); if (dd < d) { d = dd; best = i; } });
       return best;
     };
+    let target = null; // card di destinazione mentre l'animazione è in corso (clic ripetuti veloci)
+    let cur = 0;       // card attualmente mostrata
     const go = i => {
-      i = Math.max(0, Math.min(n - 1, i));
-      track.scrollTo({ left: offset(i), behavior: reduce ? 'auto' : 'smooth' });
+      target = ((i % n) + n) % n; // circolare
+      track.scrollTo({ left: offset(target), behavior: reduce ? 'auto' : 'smooth' });
+      paint(target);
     };
-    let last = -1;
-    const sync = () => {
-      const i = current();
-      if (i === last) return; last = i;
+    const paint = i => {
+      cur = i;
       slides.forEach((s, j) => s.classList.toggle('is-active', j === i));
       dots.forEach((d, j) => d.setAttribute('aria-current', String(j === i)));
-      count.textContent = pad(i + 1);
-      prev.disabled = i === 0; next.disabled = i === n - 1;
+      count.innerHTML = `<span class="carousel-count__now">${pad(i + 1)}</span> / ${pad(n)}`;
     };
-    prev.addEventListener('click', () => go(current() - 1));
-    next.addEventListener('click', () => go(current() + 1));
+    const base = () => target ?? cur;
+    prev.addEventListener('click', () => go(base() - 1));
+    next.addEventListener('click', () => go(base() + 1));
     dots.forEach((d, j) => d.addEventListener('click', () => go(j)));
     track.addEventListener('keydown', e => {
-      const map = { ArrowLeft: current() - 1, ArrowRight: current() + 1, Home: 0, End: n - 1 };
+      const map = { ArrowLeft: base() - 1, ArrowRight: base() + 1, Home: 0, End: n - 1 };
       if (e.key in map && e.target === track) { e.preventDefault(); go(map[e.key]); }
     });
-    let raf = 0;
-    track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(sync); }, { passive: true });
+    let raf = 0, idle = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(raf); clearTimeout(idle);
+      raf = requestAnimationFrame(() => { if (target === null) paint(current()); });
+      idle = setTimeout(() => { target = null; paint(current()); }, 140); // fine dello scorrimento (swipe, snap, animazione)
+    }, { passive: true });
 
-    // Clic su una scheda laterale (parzialmente visibile): la porta al centro
+    // Clic su una card laterale parzialmente visibile: la porta al centro (non apre link)
     slides.forEach((s, j) => s.addEventListener('click', e => {
-      if (!s.classList.contains('is-active')) { e.preventDefault(); go(j); }
+      if (!s.classList.contains('is-active')) { e.preventDefault(); e.stopPropagation(); go(j); }
     }, true));
-    // Tab su un link di una scheda laterale: la scheda scorre al centro
+    // Tab su un link di una card laterale: la card scorre al centro
     slides.forEach((s, j) => s.addEventListener('focusin', () => { if (!s.classList.contains('is-active')) go(j); }));
 
-    // Trascinamento col mouse (su touch c'è già lo swipe nativo)
+    // Trascinamento col mouse (su touch c'è lo swipe nativo)
     let drag = null;
     track.addEventListener('pointerdown', e => {
       if (e.pointerType !== 'mouse' || e.button !== 0) return;
-      drag = { x: e.clientX, left: track.scrollLeft, moved: false, from: current() };
+      drag = { x: e.clientX, left: track.scrollLeft, moved: false, from: base() };
     });
     addEventListener('pointermove', e => {
       if (!drag) return;
@@ -79,13 +83,13 @@ window.Sezioni = (() => {
       if (!d.moved) return;
       track.classList.remove('is-dragging');
       const dx = e.clientX - d.x;
-      go(Math.abs(dx) > 60 ? d.from + (dx < 0 ? 1 : -1) : d.from);
-      // il clic che chiude un trascinamento non deve aprire link
+      go(Math.abs(dx) > 60 ? Math.max(0, Math.min(n - 1, d.from + (dx < 0 ? 1 : -1))) : d.from);
       track.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); }, { capture: true, once: true });
     });
 
-    sync();
-    addEventListener('resize', () => { last = -1; go(current()); });
+    paint(0);
+    // ridimensionamento o rotazione: resta sulla stessa card, senza animazione
+    addEventListener('resize', () => { const i = base(); target = i; track.scrollTo({ left: offset(i), behavior: 'auto' }); });
   }
 
   /* ---------- INGRANDIMENTO LOCANDINE / IMMAGINI ----------

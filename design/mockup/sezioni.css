@@ -8,38 +8,82 @@
    ========================================================= */
 
 /* ---------------- BENEFICENZA: carosello ---------------- */
+/* Struttura: card al centro, freccia precedente a sinistra, successiva a destra, indicatori sotto */
+.charity .cshell {
+  --edge: max(var(--gutter), calc((100vw - var(--maxw)) / 2 + var(--gutter)));
+  display: grid; grid-template-columns: 1fr; grid-template-areas: "track" "nav" "hint";
+}
+@media (min-width: 861px) { .charity .cshell { --edge: max(104px, calc((100vw - var(--maxw)) / 2 + var(--gutter))); } }
+.charity .cshell { --card: min(78vw, 1040px); }
+@media (max-width: 860px) { .charity .cshell { --card: 86vw; } }
+/* lo spazio finale permette anche all'ultima card di arrivare nella posizione della prima */
+.charity .carousel { grid-area: track; grid-auto-columns: var(--card); padding-inline: var(--edge) max(var(--edge), calc(100% - var(--edge) - var(--card))); scroll-padding-inline: var(--edge); }
+
+.carrow {
+  grid-area: track; align-self: center; z-index: 3;
+  display: grid; place-items: center; width: 60px; height: 60px; padding: 0; border-radius: 50%;
+  border: 3px solid var(--c-palm); background: var(--c-cream); color: var(--c-palm); cursor: pointer;
+  box-shadow: 0 10px 28px -8px rgba(0,0,0,.6);
+  transition: background-color var(--d-fast), transform var(--d-fast) var(--ease-out);
+}
+.carrow svg { width: 26px; height: 26px; }
+.carrow:hover { background: var(--c-gold); transform: scale(1.06); }
+.carrow:active { transform: scale(.94); }
+.carrow:focus-visible { outline: 3px solid var(--c-gold); outline-offset: 4px; }
+.carrow--prev { justify-self: start; margin-left: calc((var(--edge) - 60px) / 2); }
+.carrow--next { justify-self: end; margin-right: calc((var(--edge) - 60px) / 2); }
+
+.cnav { grid-area: nav; display: flex; align-items: center; justify-content: center; gap: .9rem; padding-top: var(--s-2); }
+.charity--single .carrow, .charity--single .cnav, .charity--single .carousel-hint { display: none; }
+.charity .charity__foot { justify-content: flex-end; padding-top: var(--s-4); }
+
+/* Smartphone: frecce ai lati degli indicatori, sotto la card (mai sopra i contenuti) */
+@media (max-width: 860px) {
+  .charity .cshell { grid-template-columns: auto 1fr auto; grid-template-areas: "track track track" "prev nav next" "hint hint hint"; align-items: center; }
+  .carrow { width: 52px; height: 52px; box-shadow: none; }
+  .carrow--prev { grid-area: prev; margin: var(--s-2) 0 0 var(--gutter); }
+  .carrow--next { grid-area: next; margin: var(--s-2) var(--gutter) 0 0; }
+}
+
 .charity .carousel .ccard {
   transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out), box-shadow 500ms var(--ease-out);
 }
 .charity:not(.charity--single) .carousel { cursor: grab; }
-.charity:not(.charity--single) .carousel .ccard:not(.is-active) { opacity: .42; transform: scale(.94); cursor: pointer; }
+/* solo opacità: una trasformazione falserebbe il punto di aggancio dello scorrimento */
+.charity:not(.charity--single) .carousel .ccard:not(.is-active) { opacity: .42; cursor: pointer; }
 .charity .carousel .ccard.is-active { box-shadow: 0 2px 6px rgba(0,0,0,.2), 0 36px 70px -24px rgba(0,0,0,.65); }
 .charity .carousel.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
 .charity .carousel.is-dragging .ccard { transition: none; }
-.charity .carousel:focus-visible { outline: 3px solid var(--c-gold); outline-offset: 6px; border-radius: var(--r-lg); }
+.charity .carousel:focus-visible { outline: 3px solid var(--c-gold); outline-offset: -3px; }
 
 /* Le colonne della card non si allargano oltre la card (testo mai tagliato) */
 .ccard > * { min-width: 0; }
 @media (max-width: 860px) { .ccard { grid-template-columns: minmax(0, 1fr); } }
 
-/* Immagine della card: intera, mai tagliata (le illustrazioni hanno fondo verde scuro) */
+/* Immagine della card: intera, mai tagliata (le illustrazioni hanno fondo scuro) */
 .ccard__media { background: var(--c-palm); }
 .ccard__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 
-/* Puntini cliccabili (area di tocco 32 px) e contatore */
+/* Bollino data/luogo in alto a destra: non copre le scritte delle illustrazioni */
+.ccard__stat { left: auto; bottom: auto; top: 1.25rem; right: 1.25rem; transform: rotate(3deg); }
+@media (max-width: 860px) { .ccard__stat { display: none; } } /* su smartphone data e luogo sono già nel testo della card */
+
+/* Card DEMO */
+.ccard--demo .tag-prov { margin-bottom: var(--s-3); }
+.ccard__nolink { margin: auto 0 0; display: inline-flex; align-items: center; min-height: 48px; padding: .7rem 1.2rem; border-radius: var(--r-pill); border: 2px dashed #c0392b; color: #8a1f1f; font: 800 .9rem/1 var(--f-body); }
+
+/* Indicatori cliccabili (area di tocco 32 px) e contatore */
 .charity .dots { gap: .25rem; align-items: center; }
 .charity .dots li { width: auto; height: auto; background: none; }
 .dots__btn { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 99px; }
-.dots__btn::before { content: ""; width: 10px; height: 10px; border-radius: 99px; background: rgba(255,248,238,.35); transition: width 300ms var(--ease-out), background-color 300ms; }
-.dots__btn:hover::before { background: rgba(255,248,238,.7); }
-.dots__btn[aria-current="true"] { width: 44px; }
-.dots__btn[aria-current="true"]::before { width: 32px; background: var(--c-gold); }
-.charity .charity__foot { flex-wrap: wrap; }
-.carousel-count { margin: 0 auto 0 .75rem; font: 400 1.25rem/1 var(--f-display); letter-spacing: .08em; color: rgba(255,248,238,.6); }
+.dots__btn::before { content: ""; width: 12px; height: 12px; border-radius: 99px; background: rgba(255,248,238,.4); transition: width 300ms var(--ease-out), background-color 300ms; }
+.dots__btn:hover::before { background: rgba(255,248,238,.75); }
+.dots__btn:focus-visible { outline: 3px solid var(--c-gold); outline-offset: 2px; }
+.dots__btn[aria-current="true"] { width: 48px; }
+.dots__btn[aria-current="true"]::before { width: 34px; background: var(--c-gold); }
+.carousel-count { margin: 0; font: 400 1.25rem/1 var(--f-display); letter-spacing: .08em; color: rgba(255,248,238,.6); }
 .carousel-count__now { color: var(--c-gold); font-size: 1.6rem; }
-.carousel-hint { display: none; margin: 0 auto var(--s-3); padding-inline: var(--gutter); font: 400 1.25rem/1 var(--f-hand); color: var(--c-gold); text-align: center; }
-.carousel-hint span { display: inline-block; animation: hint-nudge 1.8s var(--ease-in-out) infinite; }
-@keyframes hint-nudge { 0%, 60%, 100% { transform: translateX(0); } 30% { transform: translateX(6px); } }
+.carousel-hint { grid-area: hint; display: none; margin: var(--s-3) 0 0; padding-inline: var(--gutter); font: 400 1.2rem/1.2 var(--f-hand); color: var(--c-gold); text-align: center; }
 @media (hover: none) { .charity:not(.charity--single) .carousel-hint { display: block; } }
 
 /* ---------------- BENEFICENZA / EVENTI: archivi ---------------- */
@@ -116,6 +160,6 @@
 @keyframes zoom-in { from { opacity: 0; transform: scale(.96); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .charity .carousel .ccard, .poster-zoom img, .dots__btn::before, .event-pager__link { transition: none; }
-  .carousel-hint span, .zoom-dialog[open] { animation: none; }
+  .charity .carousel .ccard, .poster-zoom img, .dots__btn::before, .event-pager__link, .carrow { transition: none; }
+  .zoom-dialog[open] { animation: none; }
 }

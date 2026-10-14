@@ -64,7 +64,7 @@ async function suite(engine, b, vpName, opts) {
   await noOverflow('home');
   ok(`[${vp}] home: nessun href="#"`, (await p.$$('a[href="#"]')).length === 0);
   ok(`[${vp}] home: nessun importo €`, !(await p.evaluate(() => /€|3\.000|euro/i.test(document.body.innerText))));
-  ok(`[${vp}] home: 1 iniziativa, frecce e puntini nascosti`, await p.evaluate(() => document.querySelectorAll('#charity-track .ccard').length === 1 && getComputedStyle(document.querySelector('.carousel-ctrl')).display === 'none'));
+  ok(`[${vp}] home: carosello con 3 card, frecce e 3 indicatori visibili`, await p.evaluate(() => document.querySelectorAll('#charity-track .ccard').length === 3 && document.querySelectorAll('.dots__btn').length === 3 && getComputedStyle(document.querySelector('.carrow--next')).display !== 'none'));
   const draftTitles = await p.evaluate(() => window.SITE_DATA.events.filter(e => e.status === 'draft').map(e => e.title));
   ok(`[${vp}] home: nessuna bozza`, !(await p.evaluate(t => t.some(x => document.body.innerText.includes(x)), draftTitles)));
   ok(`[${vp}] home eventi: card alternate sinistra/destra`, await p.evaluate(() => { const c = [...document.querySelectorAll('#home-events .ecard')]; return c.length >= 1 && c.every((e, i) => e.classList.contains(i % 2 ? 'ecard--right' : 'ecard--left')); }));
@@ -90,7 +90,7 @@ async function suite(engine, b, vpName, opts) {
   }
 
   // 2. Home → beneficenza → articolo → archivio → Home
-  await p.click('#charity-track .btn'); await p.waitForLoadState();
+  await p.click('#charity-track .ccard.is-active .btn'); await p.waitForLoadState();
   ok(`[${vp}] home → articolo beneficenza`, /beneficenza-articolo\.html\?slug=donazione-spdc-scorrano-2025/.test(p.url()) && (await p.textContent('h1')).includes('Un gesto concreto'));
   ok(`[${vp}] articolo: nessun importo`, !(await p.evaluate(() => /€|3\.000|euro/i.test(document.body.innerText))));
   ok(`[${vp}] articolo: tappe e fonti con data di consultazione`, (await p.$$('.steps li')).length === 3 && /consultato: 14\/10\/2026/.test(await p.textContent('.sources')));
@@ -171,28 +171,12 @@ async function suite(engine, b, vpName, opts) {
   await p.goto(B + 'album.html?slug=demo-non-pubblicato'); ok(`[${vp}] album non pubblicato`, (await p.textContent('h1')).includes('non disponibile'));
   await p.goto(B + 'evento.html?slug=inesistente'); ok(`[${vp}] slug inesistente → non trovato`, (await p.textContent('h1')).includes('non trovato'));
 
-  // 5. Carosello con più card: variante DEMO NON PUBBLICABILE
-  await p.goto(B + 'index.html?demo=carosello#beneficenza'); await p.waitForTimeout(600);
-  ok(`[${vp}] carosello demo: almeno 3 schede, frecce visibili, demo etichettate`, (await p.$$('#charity-track .ccard')).length >= 3 && await p.isVisible('.carousel-ctrl') && (await p.$$('.ccard--demo .tag-prov')).length === (await p.$$('#charity-track .ccard')).length - 1);
-  ok(`[${vp}] carosello demo: contatore e scheda attiva`, (await p.textContent('.carousel-count')).replace(/\s/g, '').startsWith('01/') && (await p.$$('.ccard.is-active')).length === 1);
-  await p.click('.carousel-ctrl [data-dir="1"]'); await p.waitForTimeout(900);
-  const sl1 = await p.$eval('#charity-track', t => t.scrollLeft);
-  ok(`[${vp}] carosello demo: freccia avanti`, sl1 > 50, `scrollLeft=${sl1}`);
-  await p.focus('#charity-track'); await p.keyboard.press('ArrowRight'); await p.waitForTimeout(700);
-  ok(`[${vp}] carosello demo: frecce della tastiera`, (await p.$eval('#charity-track', t => t.scrollLeft)) > sl1);
-  await p.keyboard.press('Home'); await p.waitForTimeout(1500);
-  ok(`[${vp}] carosello demo: tasto Home torna alla prima`, (await p.$eval('#charity-track', t => t.scrollLeft)) < 5);
-  await p.locator('.dots__btn').nth(2).click(); await p.waitForTimeout(800);
-  ok(`[${vp}] carosello demo: puntino 3 → scheda 3`, (await p.textContent('.carousel-count__now')) === '03' && await p.evaluate(() => document.querySelectorAll('.ccard')[2].classList.contains('is-active')));
-  if (vpName === 'desktop') {
-    await p.locator('.dots__btn').nth(0).click(); await p.waitForTimeout(1600);
-    const box = await p.locator('#charity-track').boundingBox();
-    await p.mouse.move(box.x + box.width * .6, box.y + 150); await p.mouse.down(); await p.mouse.move(box.x + box.width * .2, box.y + 150, { steps: 8 }); await p.mouse.up(); await p.waitForTimeout(900);
-    ok(`[${vp}] carosello demo: trascinamento col mouse`, (await p.textContent('.carousel-count__now')) === '02');
-    await p.locator('#charity-track .ccard').nth(0).click(); await p.waitForTimeout(800);
-    ok(`[${vp}] carosello demo: clic su scheda laterale la porta al centro`, (await p.textContent('.carousel-count__now')) === '01' && p.url().includes('index.html'));
-  }
-  await shot('carosello-demo');
+  // 5. Carosello: il comportamento completo è verificato da design/tests/carosello.js
+  await p.goto(B + 'index.html#beneficenza'); await p.waitForTimeout(600);
+  await p.evaluate(() => document.querySelector('.carrow--next').click()); await p.waitForTimeout(900);
+  ok(`[${vp}] carosello: freccia successiva → card 2`, (await p.textContent('.carousel-count__now')) === '02');
+  await p.goto(B + 'index.html?carosello=produzione#beneficenza'); await p.waitForTimeout(400);
+  ok(`[${vp}] carosello produzione: 1 card, controlli nascosti`, (await p.$$('#charity-track .ccard')).length === 1 && !(await p.isVisible('.carrow--next')));
 
   // Menu mobile
   if (isMobileMenu) {
@@ -216,7 +200,7 @@ async function suite(engine, b, vpName, opts) {
   ok('[reduced-motion] nessuna intro, nessun blocco', await p.evaluate(() => document.querySelector('.hero').classList.contains('is-done') && !document.documentElement.classList.contains('intro-lock')));
 
   // Link morti su tutte le pagine
-  const pages = ['index.html', 'index.html?demo=carosello', 'evento.html?slug=torneo-calcio-6-simone-2024', 'beneficenza.html', 'beneficenza-articolo.html?slug=donazione-spdc-scorrano-2025', 'eventi.html', 'eventi.html?bozze=1', 'evento.html?slug=memorial-2025', 'foto.html', 'album.html?slug=memorial-2025', 'album.html?slug=demo-album-grande', 'foto.html?demo=1', 'privacy.html'];
+  const pages = ['index.html', 'index.html?carosello=produzione', 'evento.html?slug=torneo-calcio-6-simone-2024', 'beneficenza.html', 'beneficenza-articolo.html?slug=donazione-spdc-scorrano-2025', 'eventi.html', 'eventi.html?bozze=1', 'evento.html?slug=memorial-2025', 'foto.html', 'album.html?slug=memorial-2025', 'album.html?slug=demo-album-grande', 'foto.html?demo=1', 'privacy.html'];
   const dead = [];
   for (const pg of pages) {
     await p.goto(B + pg);

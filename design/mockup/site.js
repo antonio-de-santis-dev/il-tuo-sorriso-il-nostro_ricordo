@@ -95,18 +95,22 @@
   const ph = (cls, label) => `<div class="ph ${cls}" role="img" aria-label="Segnaposto: ${esc(label)}"><span>${esc(label)}<br><small>da fornire</small></span></div>`;
 
   const initiativeCard = (i, n, total) => i.demo ? `
-    <article class="ccard ccard--demo"${total ? ` aria-roledescription="slide" aria-label="${n} di ${total}"` : ''}>
-      <div class="ccard__media">${ph(['ph--warm', 'ph--sea', 'ph--poster'][(n || 1) % 3], 'Scheda dimostrativa')}</div>
+    <article class="ccard ccard--demo"${total ? ` aria-roledescription="slide" aria-label="${n} di ${total} — scheda dimostrativa"` : ''}>
+      <div class="ccard__media">
+        ${i.image ? `<img class="ccard__img" src="${esc(i.image)}" alt="Immagine dimostrativa" draggable="false">` : ph('ph--poster2', 'Immagine dimostrativa')}
+      </div>
       <div class="ccard__body">
-        <span class="tag-prov">Demo non pubblicabile</span>
+        <p class="ccard__meta"><span>${esc(i.dateLabel)}</span><span>${esc(i.place)}</span></p>
+        <span class="tag-prov">Demo — non è un’iniziativa reale</span>
         <h3 class="h3">${esc(i.title)}</h3>
         <p>${esc(i.summary)}</p>
-        <p class="src">Nessun articolo collegato: la scheda non rappresenta un’iniziativa reale.</p>
+        <p class="ccard__nolink">Nessun articolo: scheda dimostrativa</p>
+        <p class="src">Serve solo a verificare il funzionamento del carosello.</p>
       </div>
     </article>` : `
     <article class="ccard"${total ? ` aria-roledescription="slide" aria-label="${n} di ${total}"` : ''}>
       <div class="ccard__media">
-        ${i.image ? `<img class="ccard__img" src="${esc(i.image)}" alt="" loading="lazy" draggable="false">` : ph('ph--hospital', 'Foto autorizzata della consegna')}
+        ${i.image ? `<img class="ccard__img" src="${esc(i.image)}" alt="" draggable="false">` : ph('ph--hospital', 'Foto autorizzata della consegna')}
         <p class="ccard__stat"><b>${esc(i.dateLabel)}</b><span>${esc(i.place.split(',').pop().trim())}</span></p>
       </div>
       <div class="ccard__body">

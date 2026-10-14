@@ -38,7 +38,7 @@ Il server locale serve **solo** per i test automatici (`design/tests/e2e.js`). G
 | Album | http://localhost:8765/mockup/album.html?slug=memorial-2025 |
 | Privacy | http://localhost:8765/mockup/privacy.html |
 | Revisione: bozze eventi | http://localhost:8765/mockup/eventi.html?bozze=1 |
-| Revisione: carosello a più card (DEMO) | http://localhost:8765/mockup/index.html?demo=carosello#beneficenza |
+| Anteprima carosello in modalità produzione (solo iniziative verificate) | http://localhost:8765/mockup/index.html?carosello=produzione#beneficenza |
 | Revisione: album fittizi di prova | http://localhost:8765/mockup/foto.html?demo=1 |
 
 File principali in `design/mockup/`: `data.js` (catalogo contenuti), `site.js` (navbar, footer, schede comuni), `mockup.js` (Home), `pages.js` (pagine interne), `tokens.css`, `mockup.css`, `pages.css`.
@@ -49,7 +49,9 @@ Test automatici: `design/tests/e2e.js` (istruzioni in testa al file). Screenshot
 
 Modifiche visive e funzionali **solo** a Beneficenza ed Eventi (Home e pagine interne). Hero, intro, navbar, Chi siamo, galleria fotografica, Sponsor, Ringraziamenti e footer sono **invariati**: verificato confrontando HTML e stili calcolati di ogni elemento (54 blocchi a 1440/768/390 px, 0 differenze).
 
-- **Carosello Beneficenza:** scheda attiva in evidenza, puntini cliccabili, contatore 01/04, tastiera (← → Home Fine), trascinamento col mouse, clic su una scheda laterale per portarla al centro, invito a scorrere su smartphone. La modalità dimostrativa (`index.html?demo=carosello`) mostra 4 schede: 1 reale + 3 **DEMO NON PUBBLICABILE**.
+- **Carosello Beneficenza (sempre attivo aprendo `index.html`):** 3 card — 1 reale (Scorrano) + 2 marcate **DEMO**, senza articolo. Freccia precedente a sinistra e successiva a destra (su smartphone ai lati degli indicatori, sotto la card), 3 indicatori cliccabili, contatore, navigazione circolare (dopo la terza si torna alla prima), swipe, tastiera (← → Inizio Fine), trascinamento col mouse; la card successiva si intravede.
+  - Modalità in `design/mockup/data.js` → `carousel.mode`: `'mockup'` (predefinita: reali + DEMO, controlli sempre visibili) o `'produzione'` (solo iniziative verificate; frecce e indicatori nascosti solo se la card è una). Anteprima produzione: `index.html?carosello=produzione`.
+  - Test dedicato: `node design/tests/carosello.js` (apre i file direttamente) → 59/59; screenshot `design/screenshots/carosello-*`.
 - **Card:** le illustrazioni sono intere, mai tagliate.
 - **Eventi:** locandine come stampe appese (cornice e nastro), ingrandibili con un clic; etichette tipo/stato; luogo con icona; alternanza sinistra/destra anche fra gli anni.
 - **Archivi:** riepilogo, raggruppamento per anno, salto rapido all'anno.
@@ -58,4 +60,4 @@ Modifiche visive e funzionali **solo** a Beneficenza ed Eventi (Home e pagine in
 
 Nuovi file isolati: `design/mockup/sezioni.css` e `sezioni.js`, caricati solo da index, beneficenza, beneficenza-articolo, eventi, evento. File della galleria non toccati.
 
-Test: `node design/tests/e2e.js` → 217/217 su Chromium, desktop, tablet e mobile (WebKit non disponibile in questo ambiente). Screenshot `design/screenshots/ult-*`.
+Test: `node design/tests/e2e.js` → 203/203 e `node design/tests/carosello.js` → 59/59 su Chromium, desktop, tablet e mobile (WebKit non disponibile in questo ambiente). Screenshot `design/screenshots/ult-*`.

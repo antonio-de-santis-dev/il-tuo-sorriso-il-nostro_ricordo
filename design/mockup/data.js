@@ -104,11 +104,21 @@
         note: 'Non compare nel catalogo: aprendo il link diretto si vede lo stato “album non disponibile”.' }
     ],
 
-    /* Schede per studiare il carosello con più card (index.html?demo=carosello). Mai pubblicabili. */
+    /* Carosello Beneficenza in Home.
+       mode 'mockup'     → iniziative reali + schede DEMO, controlli sempre visibili (predefinita in questa fase)
+       mode 'produzione' → solo iniziative pubblicate; frecce e indicatori nascosti solo se la card è una
+       (anteprima senza modificare questo file: index.html?carosello=produzione) */
+    carousel: { mode: 'mockup' },
+
+    /* Schede DEMO del carosello: servono solo a verificarne il funzionamento.
+       Non sono attività dell'associazione e non hanno articolo collegato. */
     demoInitiatives: [
-      { slug: 'demo-1', demo: true, title: 'Scheda dimostrativa', dateLabel: 'DEMO', place: 'Nessuna iniziativa reale', summary: 'Serve solo a vedere il carosello con più schede. Non è un contenuto dell’associazione.', items: [], sources: [] },
-      { slug: 'demo-2', demo: true, title: 'Scheda dimostrativa', dateLabel: 'DEMO', place: 'Nessuna iniziativa reale', summary: 'Serve solo a vedere il carosello con più schede. Non è un contenuto dell’associazione.', items: [], sources: [] },
-      { slug: 'demo-3', demo: true, title: 'Scheda dimostrativa', dateLabel: 'DEMO', place: 'Nessuna iniziativa reale', summary: 'Serve solo a vedere il carosello con più schede. Non è un contenuto dell’associazione.', items: [], sources: [] }
+      { slug: 'demo-1', demo: true, title: 'DEMO — Titolo di una futura iniziativa', dateLabel: 'DEMO', place: 'Luogo da definire',
+        image: '../assets/demo/carosello-demo-1.svg',
+        summary: 'Testo segnaposto: qui comparirà la descrizione di una nuova iniziativa benefica, quando l’associazione la avrà realizzata e documentata.', items: [], sources: [] },
+      { slug: 'demo-2', demo: true, title: 'DEMO — Un’altra iniziativa di esempio', dateLabel: 'DEMO', place: 'Luogo da definire',
+        image: '../assets/demo/carosello-demo-2.svg',
+        summary: 'Testo segnaposto: scheda di esempio con lo stesso layout delle iniziative reali, usata solo per provare il carosello.', items: [], sources: [] }
     ]
   };
 })();

@@ -5,12 +5,13 @@
   const { D, $, $$, reduce, initiativeCard, eventCard, publicInitiatives, publicEvents } = window.Site;
 
   /* ---------- CONTENUTI DAL CATALOGO ---------- */
-  // ?demo=carosello aggiunge schede “DEMO NON PUBBLICABILE” per provare il carosello con più card
-  const demo = new URLSearchParams(location.search).get('demo') === 'carosello';
+  // Carosello Beneficenza: modalità da data.js (predefinita 'mockup' = iniziative reali + schede DEMO).
+  // index.html?carosello=produzione mostra in anteprima la modalità futura (solo iniziative pubblicate).
+  const mode = new URLSearchParams(location.search).get('carosello') || D.carousel?.mode || 'mockup';
+  const inits = [...publicInitiatives(), ...(mode === 'mockup' ? D.demoInitiatives : [])];
   const track = $('#charity-track');
-  const inits = [...publicInitiatives(), ...(demo ? D.demoInitiatives : [])];
   track.innerHTML = inits.map((i, n) => initiativeCard(i, n + 1, inits.length)).join('');
-  if (demo) $('.charity__head').insertAdjacentHTML('afterend', '<p class="wrap note-prov note-prov--dark">Variante DEMO NON PUBBLICABILE: le schede dimostrative servono solo a studiare il carosello con più card.</p>');
+  if (inits.some(i => i.demo)) $('.charity__head').insertAdjacentHTML('afterend', '<p class="wrap note-prov note-prov--dark">Mockup: le schede marcate DEMO servono solo a mostrare il carosello. Non sono iniziative reali dell’associazione.</p>');
 
   $('#home-events').innerHTML = publicEvents().slice(0, 3).map(eventCard).join('');
 

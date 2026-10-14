@@ -88,15 +88,19 @@
       <p class="eyebrow-hand eyebrow-hand--gold">Beneficenza</p>
       <h2 id="beneficenza-title" class="h2">Quello che abbiamo<br>restituito</h2>
     </div>
-    <div class="carousel-ctrl" role="group" aria-label="Controlli carosello">
-      <button class="icon-btn" type="button" data-dir="-1" aria-controls="charity-track" aria-label="Iniziativa precedente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <button class="icon-btn" type="button" data-dir="1" aria-controls="charity-track" aria-label="Iniziativa successiva"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    </div>
   </div>
 
-  <div id="charity-track" class="carousel" role="region" aria-roledescription="carosello" aria-label="Iniziative di beneficenza" tabindex="0"></div>
+  <!-- Carosello: le card sono generate da data.js (sezioni.js), qualunque sia il loro numero -->
+  <div class="cshell" role="region" aria-roledescription="carosello" aria-label="Iniziative di beneficenza">
+    <div id="charity-track" class="carousel" tabindex="0" aria-label="Schede: usa le frecce sinistra e destra per scorrere"></div>
+    <button class="carrow carrow--prev" type="button" aria-controls="charity-track" aria-label="Iniziativa precedente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="carrow carrow--next" type="button" aria-controls="charity-track" aria-label="Iniziativa successiva"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="cnav">
+      <ol class="dots" aria-label="Scegli la scheda"></ol>
+      <p class="carousel-count" aria-live="polite"></p>
+    </div>
+  </div>
   <div class="wrap charity__foot">
-    <ol class="dots" aria-hidden="true"></ol>
     <a class="link-arrow link-arrow--light" href="beneficenza.html">Tutte le iniziative <span aria-hidden="true">→</span></a>
   </div>
 </section>
