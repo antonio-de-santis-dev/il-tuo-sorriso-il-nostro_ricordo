@@ -122,7 +122,7 @@
     const album = publishedAlbum(e.album);
     return `
     <li class="ecard">
-      <div class="ecard__poster">${e.poster ? `<img src="${esc(e.poster)}" alt="Locandina: ${esc(e.title)}">` : ph('ph--poster', 'Locandina')}</div>
+      <div class="ecard__poster">${e.poster ? `<img src="${esc(e.poster)}" alt="Illustrazione editoriale dell’evento: ${esc(e.title)}">` : ph('ph--poster', 'Locandina')}</div>
       <div class="ecard__body">
         <p class="ecard__date"><time datetime="${esc(e.date)}"><b>${esc(e.day)}</b> ${esc(e.monthYear)}</time></p>
         ${e.status === 'draft' ? '<span class="tag-prov">Bozza non pubblicata</span>' : ''}
