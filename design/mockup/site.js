@@ -19,6 +19,9 @@
   const find = (kind, slug) => D[kind].find(x => x.slug === slug) || null;
   const param = name => new URLSearchParams(location.search).get(name);
   const publishedAlbum = slug => { const a = slug && find('albums', slug); return a && a.published ? a : null; };
+  /* Solo i contenuti pubblicabili: le bozze non compaiono mai nelle liste pubbliche */
+  const publicEvents = () => D.events.filter(e => e.status === 'published').sort((a, b) => b.date.localeCompare(a.date));
+  const publicInitiatives = () => D.initiatives.filter(i => i.status === 'published').sort((a, b) => b.date.localeCompare(a.date));
 
   /* ---------- NAVBAR ---------- */
   const SECTIONS = [['top', 'Home'], ['chi-siamo', 'Chi siamo'], ['beneficenza', 'Beneficenza'], ['eventi', 'Eventi'], ['foto', 'Foto']];
@@ -91,7 +94,16 @@
   /* ---------- SCHEDE RIUTILIZZABILI ---------- */
   const ph = (cls, label) => `<div class="ph ${cls}" role="img" aria-label="Segnaposto: ${esc(label)}"><span>${esc(label)}<br><small>da fornire</small></span></div>`;
 
-  const initiativeCard = (i, n, total) => `
+  const initiativeCard = (i, n, total) => i.demo ? `
+    <article class="ccard ccard--demo"${total ? ` aria-roledescription="slide" aria-label="${n} di ${total}"` : ''}>
+      <div class="ccard__media">${ph('ph--poster2', 'Scheda dimostrativa')}</div>
+      <div class="ccard__body">
+        <span class="tag-prov">Demo non pubblicabile</span>
+        <h3 class="h3">${esc(i.title)}</h3>
+        <p>${esc(i.summary)}</p>
+        <p class="src">Nessun articolo collegato: la scheda non rappresenta un’iniziativa reale.</p>
+      </div>
+    </article>` : `
     <article class="ccard"${total ? ` aria-roledescription="slide" aria-label="${n} di ${total}"` : ''}>
       <div class="ccard__media">
         ${i.image ? `<img src="${esc(i.image)}" alt="">` : ph('ph--hospital', 'Foto autorizzata della consegna')}
@@ -113,6 +125,7 @@
       <div class="ecard__poster">${e.poster ? `<img src="${esc(e.poster)}" alt="Locandina: ${esc(e.title)}">` : ph('ph--poster', 'Locandina')}</div>
       <div class="ecard__body">
         <p class="ecard__date"><time datetime="${esc(e.date)}"><b>${esc(e.day)}</b> ${esc(e.monthYear)}</time></p>
+        ${e.status === 'draft' ? '<span class="tag-prov">Bozza non pubblicata</span>' : ''}
         <h3 class="h3">${esc(e.title)}</h3>
         <p class="ecard__place">${e.place ? esc(e.place) : 'Luogo <em>da confermare</em>'}</p>
         <p>${esc(e.summary)}</p>
@@ -130,15 +143,21 @@
       <a class="acard__link" href="${url.album(a.slug)}">
         <span class="acard__pile" aria-hidden="true">
           <span class="acard__print acard__print--2"></span>
-          <span class="acard__print acard__print--1" style="background:${tile(a.slug.length)}"></span>
+          <span class="acard__print acard__print--1${a.preview ? ' acard__print--empty' : ''}"${a.preview ? '' : ` style="background:${tile(a.slug.length)}"`}></span>
         </span>
         <span class="acard__body">
-          ${a.fictional ? '<span class="tag-prov">Album fittizio di prova</span>' : '<span class="tag-prov">Foto dimostrative</span>'}
+          <span class="tag-prov">${a.fictional ? 'Album fittizio di prova' : a.preview ? 'Anteprima · foto non ancora caricate' : 'Foto dimostrative'}</span>
           <span class="acard__title">${esc(a.name)}</span>
-          <span class="acard__meta">${a.dateLabel ? esc(a.dateLabel) + ' · ' : ''}${a.demoCount ? `${a.demoCount} foto (valore dimostrativo)` : 'Nessuna foto ancora'}</span>
+          <span class="acard__meta">${a.dateLabel ? esc(a.dateLabel) + ' · ' : ''}${a.preview ? 'Foto non ancora caricate' : a.demoCount ? `${a.demoCount} foto segnaposto` : 'Nessuna foto ancora'}</span>
         </span>
       </a>
     </li>`;
+
+  /* Box fonti: testata, data di pubblicazione, data di consultazione, stato di verifica */
+  const sourcesBox = list => `<section class="sources" aria-labelledby="src-title"><h2 id="src-title">Fonti</h2><ul>${list.map(s => `
+    <li><a href="${esc(s.url)}" rel="noopener" target="_blank">${esc(s.name)}<span class="visually-hidden"> (si apre in una nuova scheda)</span></a>
+      <small>pubblicato: ${esc(s.date)} · consultato: ${esc(s.checked)}</small>
+      <small class="sources__status">${esc(s.status)}</small></li>`).join('')}</ul></section>`;
 
   /* Colori dei segnaposto fotografici (stessi della pagina album) */
   const PAL = [['#F39C33', '#c86b1c'], ['#28A0B2', '#1B6E82'], ['#32A5C2', '#34593C'], ['#F7C552', '#F39C33'], ['#34593C', '#112318'], ['#28A0B2', '#F7C552']];
@@ -159,5 +178,5 @@
       <p><a class="btn btn--ink" href="${back}">${esc(backLabel)}</a></p></div></section>`;
   };
 
-  window.Site = { D, $, $$, esc, reduce, url, find, param, publishedAlbum, initiativeCard, eventCard, albumCard, tile, toast, notFound, ph };
+  window.Site = { D, $, $$, esc, reduce, url, find, param, publishedAlbum, publicEvents, publicInitiatives, sourcesBox, initiativeCard, eventCard, albumCard, tile, toast, notFound, ph };
 })();

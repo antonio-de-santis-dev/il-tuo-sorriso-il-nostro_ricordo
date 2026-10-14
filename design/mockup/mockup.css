@@ -296,3 +296,8 @@ html.intro-lock .hero__skip { touch-action: manipulation; }
 /* Avviso temporaneo (download simulati) */
 .toast { position: fixed; z-index: 95; left: 50%; top: calc(var(--nav-h) + 16px); transform: translateX(-50%); background: #fff; color: var(--c-ink); border-left: 6px solid var(--c-sunset); padding: .75rem 1rem; border-radius: var(--r-sm); box-shadow: var(--shadow-card); font-weight: 700; width: max-content; max-width: calc(100% - 24px); }
 .toast[hidden] { display: none; }
+
+/* Carosello: schede DEMO NON PUBBLICABILE (solo index.html?demo=carosello) */
+.ccard--demo { border: 3px dashed #c0392b; }
+.ccard--demo .ccard__body { gap: .5rem; }
+.note-prov--dark { color: #ffb4a3; border-left-color: #ffb4a3; margin-top: calc(-1 * var(--s-4)); margin-bottom: var(--s-5); }

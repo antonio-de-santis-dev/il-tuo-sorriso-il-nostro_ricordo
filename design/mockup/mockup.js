@@ -2,17 +2,19 @@
    Navbar e footer arrivano da site.js; i contenuti da data.js.
    In Fase B la stessa logica diventerà componenti React. */
 (() => {
-  const { D, $, $$, reduce, initiativeCard, eventCard } = window.Site;
+  const { D, $, $$, reduce, initiativeCard, eventCard, publicInitiatives, publicEvents } = window.Site;
 
   /* ---------- CONTENUTI DAL CATALOGO ---------- */
+  // ?demo=carosello aggiunge schede “DEMO NON PUBBLICABILE” per provare il carosello con più card
+  const demo = new URLSearchParams(location.search).get('demo') === 'carosello';
   const track = $('#charity-track');
-  const inits = D.initiatives;
+  const inits = [...publicInitiatives(), ...(demo ? D.demoInitiatives : [])];
   track.innerHTML = inits.map((i, n) => initiativeCard(i, n + 1, inits.length)).join('');
   $('.dots').innerHTML = inits.map(() => '<li></li>').join('');
   $('.charity').classList.toggle('charity--single', inits.length < 2);
+  if (demo) $('.charity__head').insertAdjacentHTML('afterend', '<p class="wrap note-prov note-prov--dark">Variante DEMO NON PUBBLICABILE: le schede dimostrative servono solo a studiare il carosello con più card.</p>');
 
-  const events = [...D.events].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3);
-  $('#home-events').innerHTML = events.map(eventCard).join('');
+  $('#home-events').innerHTML = publicEvents().slice(0, 3).map(eventCard).join('');
 
   /* ---------- INTRO → HERO ---------- */
   const hero = $('.hero');

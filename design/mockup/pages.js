@@ -3,28 +3,28 @@
    beneficenza-articolo.html?slug=x → /beneficenza/x · evento.html?slug=x → /eventi/x · album.html?slug=x → /foto/x */
 (() => {
   const S = window.Site;
-  const { D, $, $$, esc, url, find, param, publishedAlbum } = S;
+  const { D, $, $$, esc, url, find, param, publishedAlbum, sourcesBox } = S;
   const page = document.body.dataset.page;
   const today = new Date().toISOString().slice(0, 10);
   const crumbs = items => `<nav class="crumbs" aria-label="Percorso"><ol>${items.map(([href, label]) =>
     href ? `<li><a href="${href}">${esc(label)}</a></li>` : `<li><span aria-current="page">${esc(label)}</span></li>`).join('')}</ol></nav>`;
   const setTitle = t => { document.title = `${t} · Il Tuo Sorriso, il Nostro Ricordo`; };
   const empty = (title, text) => `<div class="empty"><p class="empty__title">${esc(title)}</p><p>${text}</p></div>`;
-  const sourcesBox = list => `<section class="sources" aria-labelledby="src-title"><h2 id="src-title">Fonti</h2><ul>${list.map(s =>
-    `<li><a href="${esc(s.url)}" rel="noopener" target="_blank">${esc(s.name)}<span class="visually-hidden"> (si apre in una nuova scheda)</span></a> <small>${esc(s.date)}</small></li>`).join('')}</ul></section>`;
+  const editorial = notes => notes?.length ? `<div class="note-prov"><strong>Note redazionali (non pubblicabili):</strong><ul>${notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>` : '';
 
   /* ---------- /beneficenza ---------- */
   if (page === 'beneficenza') {
     const list = $('#list');
-    list.innerHTML = D.initiatives.length
-      ? D.initiatives.map(i => `<li>${S.initiativeCard(i)}</li>`).join('')
+    const items = S.publicInitiatives(); // ordine cronologico, dalla più recente
+    list.innerHTML = items.length
+      ? items.map(i => `<li>${S.initiativeCard(i)}</li>`).join('')
       : `<li>${empty('Nessuna iniziativa pubblicata', 'Le iniziative compariranno qui dopo l’approvazione dei testi.')}</li>`;
   }
 
   /* ---------- /beneficenza/:slug ---------- */
   if (page === 'articolo') {
     const root = $('#page'), i = find('initiatives', param('slug'));
-    if (!i) { S.notFound(root, 'Iniziativa', 'beneficenza.html', 'Tutte le iniziative'); }
+    if (!i || i.status !== 'published') { S.notFound(root, 'Iniziativa', 'beneficenza.html', 'Tutte le iniziative'); }
     else {
       setTitle(i.title);
       const ev = i.relatedEvent && find('events', i.relatedEvent);
@@ -40,8 +40,11 @@
           <figure class="article__media">${i.image ? `<img src="${esc(i.image)}" alt="">` : S.ph('ph--hospital', 'Foto autorizzata della consegna (senza pazienti riconoscibili)')}</figure>
           <p class="lead">${esc(i.summary)}</p>
           ${i.body.map(p => `<p>${esc(p)}</p>`).join('')}
-          ${ev ? `<aside class="related" aria-labelledby="rel-title">
-            <h2 id="rel-title" class="related__kicker">Fondi raccolti durante</h2>
+          ${i.timeline?.length ? `<section class="steps" aria-labelledby="steps-title"><h2 id="steps-title" class="related__kicker">Le tappe</h2><ol>${i.timeline.map(t => `
+            <li><span class="steps__when">${esc(t.when)}</span><span class="steps__what">${t.event && find('events', t.event)?.status === 'published' ? `<a href="${url.event(t.event)}">${esc(t.what)}</a>` : esc(t.what)}</span></li>`).join('')}</ol></section>` : ''}
+          ${editorial(i.notes)}
+          ${ev && ev.status === 'published' ? `<aside class="related" aria-labelledby="rel-title">
+            <h2 id="rel-title" class="related__kicker">Evento di raccolta fondi collegato</h2>
             <a class="related__card" href="${url.event(ev.slug)}">
               <span class="related__thumb">${S.ph('ph--poster', 'Locandina')}</span>
               <span><span class="related__kicker">${esc(ev.day)} ${esc(ev.monthYear)}</span><span class="related__title">${esc(ev.title)}</span></span>
@@ -54,6 +57,7 @@
             <div><dt>Quando</dt><dd>${esc(i.dateLabel)}</dd></div>
             <div><dt>Dove</dt><dd>${esc(i.place)}</dd></div>
             <div><dt>Cosa è stato donato</dt><dd><ul>${i.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul></dd></div>
+            ${i.purpose ? `<div><dt>Per cosa</dt><dd>${esc(i.purpose)}</dd></div>` : ''}
           </dl></section>
           ${sourcesBox(i.sources)}
         </div>
@@ -63,14 +67,17 @@
 
   /* ---------- /eventi ---------- */
   if (page === 'eventi') {
-    const all = [...D.events].sort((a, b) => b.date.localeCompare(a.date));
+    const all = S.publicEvents(), drafts = param('bozze') === '1' ? D.events.filter(e => e.status === 'draft') : [];
     const next = all.filter(e => e.date >= today).reverse(), past = all.filter(e => e.date < today);
     const group = (title, list, emptyHtml) => `<section class="group" aria-labelledby="g-${title}">
       <h2 class="group-title" id="g-${title}">${title} <small>${list.length ? `${list.length} ${list.length === 1 ? 'evento' : 'eventi'}` : ''}</small></h2>
       ${list.length ? `<ol class="timeline">${list.map(S.eventCard).join('')}</ol>` : emptyHtml}</section>`;
     $('#groups').innerHTML =
       group('Prossimi', next, empty('Nessun evento annunciato', 'Quando ci sarà una nuova data la troverai qui. Nel frattempo segui l’associazione su <a href="https://www.instagram.com/ilvostrosorrisoilnostroricordo/" rel="noopener" target="_blank">Instagram</a>.')) +
-      group('Passati', past, empty('Nessun evento passato', 'L’archivio è vuoto.'));
+      group('Passati', past, empty('Nessun evento passato', 'L’archivio è vuoto.')) +
+      (drafts.length ? `<section class="group group--draft" aria-labelledby="g-bozze"><h2 class="group-title" id="g-bozze">Bozze redazionali <small>non pubblicabili, visibili solo in revisione</small></h2>
+        <ol class="timeline">${drafts.map(S.eventCard).join('')}</ol></section>`
+        : `<p class="review-link"><a href="eventi.html?bozze=1">Revisione: mostra le bozze non pubblicate</a></p>`);
   }
 
   /* ---------- /eventi/:slug ---------- */
@@ -80,7 +87,9 @@
     else {
       setTitle(e.title);
       const album = publishedAlbum(e.album), ini = e.initiative && find('initiatives', e.initiative);
+      const draft = e.status === 'draft';
       root.innerHTML = `
+      ${draft ? `<div class="draft-banner" role="note"><div class="wrap"><strong>BOZZA NON PUBBLICATA.</strong> Questa scheda non compare nel sito pubblico finché l’associazione non conferma i dati. <a href="eventi.html?bozze=1">Torna alle bozze</a></div></div>` : ''}
       <section class="page-head" aria-labelledby="page-title"><div class="wrap">
         ${crumbs([['index.html', 'Home'], ['eventi.html', 'Eventi'], [null, e.title]])}
         <div class="event-hero">
@@ -94,18 +103,21 @@
         </div>
       </div></section>
       <div class="page-body"><div class="wrap">
-        <div class="article__main">${e.body.map(p => `<p>${esc(p)}</p>`).join('')}</div>
+        <div class="article">
+          <div class="article__main">${e.body.map(p => `<p>${esc(p)}</p>`).join('')}</div>
+          <div class="article__aside">${e.sources?.length ? sourcesBox(e.sources) : ''}</div>
+        </div>
         ${album ? `<a class="gallery-cta" href="${url.album(album.slug)}">
-            <span><span class="gallery-cta__title">Galleria foto evento</span><span>${album.demoCount} foto · <span class="sim">foto dimostrative</span></span></span>
+            <span><span class="gallery-cta__title">Galleria foto evento</span><span>${album.preview ? '<span class="sim">anteprima · foto non ancora caricate</span>' : `${album.demoCount} foto · <span class="sim">segnaposto</span>`}</span></span>
             <span class="stack__go" aria-hidden="true">→</span></a>` : ''}
         ${ini ? `<aside class="related" aria-labelledby="rel-title">
-            <h2 id="rel-title" class="related__kicker">Con i fondi raccolti</h2>
+            <h2 id="rel-title" class="related__kicker">${esc(e.initiativeRelation || 'Iniziativa collegata')}</h2>
             <a class="related__card" href="${url.initiative(ini.slug)}">
               <span class="related__thumb">${S.ph('ph--hospital', 'Foto')}</span>
               <span><span class="related__kicker">${esc(ini.dateLabel)}</span><span class="related__title">${esc(ini.title)}</span></span>
               <span class="related__go" aria-hidden="true">→</span>
             </a></aside>` : ''}
-        <p><a class="back-link" href="eventi.html"><span aria-hidden="true">←</span> Tutti gli eventi</a></p>
+        <p><a class="back-link" href="${draft ? 'eventi.html?bozze=1' : 'eventi.html'}"><span aria-hidden="true">←</span> Tutti gli eventi</a></p>
       </div></div>`;
     }
   }
@@ -136,8 +148,8 @@
     <section class="page-head" aria-labelledby="page-title"><div class="wrap">
       ${crumbs([['index.html', 'Home'], ['foto.html', 'Foto'], [null, a.name]])}
       <h1 id="page-title" class="h2">${esc(a.name)}</h1>
-      <p class="album-meta">${a.dateLabel ? `<span>${esc(a.dateLabel)}</span>` : ''}<span>${N ? `${N} foto` : 'Nessuna foto'}</span>
-        <span class="tag-prov">${a.fictional ? 'Album fittizio di prova' : 'Foto dimostrative'}</span>
+      <p class="album-meta">${a.dateLabel ? `<span>${esc(a.dateLabel)}</span>` : ''}<span>${N ? `${N} foto segnaposto` : 'Nessuna foto'}</span>
+        <span class="tag-prov">${a.fictional ? 'Album fittizio di prova' : a.preview ? 'Anteprima · foto non ancora caricate' : 'Foto dimostrative'}</span>
         ${ev ? `<a class="link-arrow" href="${url.event(ev.slug)}">Vai all’evento <span aria-hidden="true">→</span></a>` : ''}</p>
       <p class="note-prov">${esc(a.note)}</p>
     </div></section>
@@ -148,7 +160,9 @@
     </div></div>
     <div class="wrap"><ul class="grid" id="grid" aria-label="Foto dell’album"></ul>
       <div class="more" id="more"></div></div>`
-    : `<div class="page-body"><div class="wrap">${empty('Nessuna foto ancora', 'L’album è stato creato ma le foto non sono ancora state caricate. Torna a trovarci dopo l’evento.')}
+    : `<div class="page-body"><div class="wrap">${a.preview
+        ? empty('Foto non ancora caricate', 'Le foto di questo evento arriveranno appena l’associazione le avrà raccolte e autorizzate. Per provare griglia, selezione e download simulati apri l’<a href="album.html?slug=demo-album-grande">album dimostrativo</a>.')
+        : empty('Nessuna foto ancora', 'L’album è stato creato ma le foto non sono ancora state caricate. Torna a trovarci dopo l’evento.')}
         <p><a class="back-link" href="foto.html"><span aria-hidden="true">←</span> Tutti gli album</a></p></div></div>`}`;
     if (!N) return;
 
