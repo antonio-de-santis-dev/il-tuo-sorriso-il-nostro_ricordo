@@ -28,6 +28,24 @@ Navbar uguale ovunque: **Home · Chi siamo · Beneficenza · Eventi · Foto**.
 - Su una pagina interna: link a `/#sezione` (si torna alla sezione giusta della Home). La voce della sezione a cui appartiene la pagina resta evidenziata (es. su `/eventi/memorial-2025` è attiva “Eventi”).
 - Logo: torna a `/#top`.
 
+### File statici del mockup (Fase A.2)
+
+Nel prototipo statico le rotte sono simulate con file HTML e il parametro `?slug=`; i contenuti arrivano tutti da `design/mockup/data.js`.
+
+| Rotta futura | File del mockup |
+|---|---|
+| `/` | `index.html` |
+| `/beneficenza` | `beneficenza.html` |
+| `/beneficenza/:slug` | `beneficenza-articolo.html?slug=donazione-spdc-scorrano-2025` |
+| `/eventi` | `eventi.html` |
+| `/eventi/:slug` | `evento.html?slug=memorial-2025` |
+| `/foto` | `foto.html` |
+| `/foto/:slug` | `album.html?slug=memorial-2025` |
+| `/privacy` | `privacy.html` |
+| 404 | stesso file con slug inesistente → “non trovato” |
+
+Arrivando sulla Home con un'ancora (`index.html#eventi`, cioè da una pagina interna) l'intro non parte: la pagina va subito alla sezione.
+
 ## 2. Flussi principali
 
 ### A. “Voglio le mie foto della serata” (mobile, il flusso più importante)

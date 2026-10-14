@@ -1,7 +1,7 @@
 # PRODUCT.md — «Il Tuo Sorriso, il Nostro Ricordo»
 
 > Stato: **Fase A — analisi e design**. Nessun codice applicativo finché i mockup non sono approvati.
-> Ultimo aggiornamento: 14/10/2026
+> Ultimo aggiornamento: 14/10/2026 (Fase A.2: vedi anche `FONTI_CONTENUTI_MOCKUP.md`)
 
 ## 1. Cosa stiamo costruendo
 
@@ -34,7 +34,7 @@ Usabili **solo attribuendoli alle fonti** e dopo conferma dell'associazione:
 - Associazione di volontariato di **Martano (LE)**.
 - Nata per **preservare il ricordo di Simone e Francesca** e trasformarlo in iniziative per il territorio e le realtà sociosanitarie locali. *(Nessun cognome, nessuna circostanza.)*
 - **Dicembre 2025**: cerimonia di donazione al reparto di Psichiatria / SPDC dell'Ospedale “Veris Delli Ponti” di **Scorrano**.
-- Materiali donati: **9 televisori, 1 amplificatore stereo, 1 biliardino**, valore complessivo **3.000 €**.
+- Materiali donati: **televisori (9 secondo le fonti), 1 amplificatore stereo, 1 biliardino**. Il valore economico riportato dalla stampa **non va pubblicato** (decisione del committente, Fase A.2).
 - Fondi raccolti negli eventi estivi culminati con il **Memorial del 21 agosto 2025**.
 - Finalità: benessere, svago e socializzazione delle persone ricoverate.
 - Dettagli secondari (targa, momento musicale con i Vasapiedi e Damiano Mulino): **opzionali**, da approvare.

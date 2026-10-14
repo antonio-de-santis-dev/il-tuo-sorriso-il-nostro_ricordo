@@ -62,8 +62,8 @@ Scala fluida (`clamp`): H2 da 40 a 88 px, H3 da 24 a 36 px, testo 17 px, interli
 | **Navbar** | Fissa. Sulla Hero: trasparente con velatura scura in alto e testo crema. Dopo la Hero: crema semitrasparente con sfocatura, testo scuro. Voce attiva = tratto arancio. Mobile: bottone “Menu” con testo (non solo icona), pannello a tutto schermo verde scuro, voci grandi in Anton, `Esc` chiude. |
 | **Bottone primario** | Oro su scuro / scuro su chiaro; altezza min. 48 px; hover −2 px, pressione scala 0,98. |
 | **Link con freccia** | “Tutte le iniziative →”: la freccia scorre di 4 px all'hover. |
-| **Card beneficenza** | Larga (78vw, max 1040 px), immagine a sinistra + testo; badge oro ruotato con il dato principale (es. 3.000 €). Su mobile: immagine sopra. |
-| **Carosello** | Scroll nativo con `scroll-snap` (swipe gratis su iOS), bottoni precedente/successivo espliciti, indicatori di posizione. **Nessun autoplay.** Con una sola card: niente frecce né puntini. |
+| **Card beneficenza** | Larga (78vw, max 1040 px), immagine a sinistra + testo; badge oro ruotato con data e luogo (nessun importo economico, per scelta del committente). Su mobile: immagine sopra. |
+| **Carosello** | Scroll nativo con `scroll-snap` (swipe gratis su iOS), bottoni precedente/successivo espliciti, indicatori di posizione, regione focalizzabile (frecce della tastiera). **Nessun autoplay.** Con una sola card frecce e puntini sono nascosti (implementato). |
 | **Card evento** | Locandina ruotata ±2° alternata a destra/sinistra; data gigante in Anton; CTA “Scopri di più” + “Galleria foto evento” solo se l'album esiste. |
 | **Pila di foto (Foto)** | Tre stampe sovrapposte; all'hover (solo puntatore fine) o al focus si aprono a ventaglio. Su touch la pila è già leggermente aperta: nessuna informazione dipende dall'hover. Tutta la card è un link a `/foto`. |
 | **Loghi sponsor** | Variante A (≤ 8 loghi): griglia statica. Variante B (molti): due righe, la prima scorre ←, la seconda →; pausa con bottone, hover e focus; elenco testuale unico per screen reader; con reduced motion diventa griglia. |
