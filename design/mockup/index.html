@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>MOCKUP · Home — Il Tuo Sorriso, il Nostro Ricordo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat+Brush&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="../assets/hero-main.webp">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="mockup.css">
+</head>
+<body class="home">
+
+<a class="skip-link" href="#main">Vai al contenuto</a>
+<div class="mockup-flag" role="note">MOCKUP Fase A — contenuti marcati <b>PROVVISORIO</b> da approvare</div>
+
+<!-- ============ NAVBAR ============ -->
+<header class="nav" data-state="over-hero">
+  <div class="nav__inner">
+    <a class="nav__logo" href="#top" aria-label="Il Tuo Sorriso, il Nostro Ricordo — torna all'inizio">
+      <img src="../assets/intro-figure.webp" alt="" width="48" height="48">
+      <span class="nav__name">Il Tuo Sorriso,<br>il Nostro Ricordo</span>
+    </a>
+    <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu">
+      <span class="nav__toggle-bars" aria-hidden="true"></span><span class="nav__toggle-label">Menu</span>
+    </button>
+    <nav id="nav-menu" class="nav__menu" aria-label="Principale">
+      <ul>
+        <li><a href="#top" data-section="top">Home</a></li>
+        <li><a href="#chi-siamo" data-section="chi-siamo">Chi siamo</a></li>
+        <li><a href="#beneficenza" data-section="beneficenza">Beneficenza</a></li>
+        <li><a href="#eventi" data-section="eventi">Eventi</a></li>
+        <li><a href="#foto" data-section="foto">Foto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ 1. INTRO + HERO ============ -->
+<section id="top" class="hero" aria-label="Benvenuti">
+  <h1 class="visually-hidden">Il Tuo Sorriso, il Nostro Ricordo — associazione di volontariato di Martano (LE)</h1>
+
+  <!-- Scena del tramonto: rivelata dall'intro con un cerchio che si apre dal sole -->
+  <div class="hero__scene">
+    <img class="hero__backdrop" src="../assets/hero-main.webp" alt="" aria-hidden="true">
+    <div class="hero__art">
+      <img class="hero__img" src="../assets/hero-main.webp" width="1254" height="1254"
+           alt="Illustrazione di Simone e Francesca sorridenti su una spiaggia al tramonto tra le palme, con la scritta Il tuo sorriso il nostro ricordo">
+    </div>
+  </div>
+
+  <!-- Livello intro: stessa immagine ritagliata, divisa in due strati
+       (figure / scritta) perché nei due file hanno scale diverse -->
+  <div class="hero__intro" aria-hidden="true">
+    <div class="hero__art hero__art--intro">
+      <img class="cut cut--figures" src="../assets/intro-figure.webp" alt="">
+      <img class="cut cut--title" src="../assets/intro-figure.webp" alt="">
+    </div>
+  </div>
+
+  <button class="hero__skip" type="button">Salta intro</button>
+
+  <p class="hero__place"><span>Associazione di volontariato</span> <span>Martano · Lecce</span></p>
+  <a class="hero__cue" href="#chi-siamo"><span>Scopri la nostra storia</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</section>
+
+<!-- ============ 2. CHI SIAMO ============ -->
+<section id="chi-siamo" class="section about" aria-labelledby="chi-siamo-title">
+  <div class="wrap about__grid">
+    <header class="about__head">
+      <p class="eyebrow-hand">Chi siamo</p>
+      <h2 id="chi-siamo-title" class="h2">Un ricordo che diventa <span class="mark">gesto</span></h2>
+      <span class="tag-prov">Titolo PROVVISORIO</span>
+    </header>
+
+    <div class="about__text">
+      <p class="lead">Siamo un'associazione di volontariato di Martano, nata per custodire il ricordo di Simone e Francesca e trasformarlo in iniziative concrete per il nostro territorio.</p>
+      <p>Lo facciamo con gli eventi dell'estate, con la musica e con le persone che ogni volta rispondono presenti. Quello che raccogliamo torna alla comunità, in particolare alle realtà sociosanitarie locali.</p>
+      <p class="note-prov">Testo PROVVISORIO scritto solo con i fatti riportati dalla stampa. Storia, data di fondazione e parole su Simone e Francesca vanno scritti e approvati dall'associazione.</p>
+    </div>
+
+    <figure class="about__photo about__photo--a">
+      <div class="ph ph--warm" role="img" aria-label="Segnaposto fotografia"><span>Foto autorizzata 1<br><small>da fornire</small></span></div>
+    </figure>
+    <figure class="about__photo about__photo--b">
+      <div class="ph ph--sea" role="img" aria-label="Segnaposto fotografia"><span>Foto autorizzata 2<br><small>da fornire</small></span></div>
+      <figcaption class="hand-caption">la nostra estate a Martano <small>(didascalia provvisoria)</small></figcaption>
+    </figure>
+
+    <blockquote class="about__quote">
+      <p>«Il tuo sorriso, il nostro ricordo»</p>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ 3. BENEFICENZA ============ -->
+<section id="beneficenza" class="section charity" aria-labelledby="beneficenza-title">
+  <div class="wrap charity__head">
+    <div>
+      <p class="eyebrow-hand eyebrow-hand--gold">Beneficenza</p>
+      <h2 id="beneficenza-title" class="h2">Quello che abbiamo<br>restituito</h2>
+    </div>
+    <div class="carousel-ctrl" aria-label="Controlli carosello">
+      <button class="icon-btn" data-dir="-1" aria-controls="charity-track" aria-label="Iniziativa precedente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn" data-dir="1" aria-controls="charity-track" aria-label="Iniziativa successiva"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+
+  <div id="charity-track" class="carousel" role="region" aria-roledescription="carosello" aria-label="Iniziative di beneficenza" tabindex="0">
+    <article class="ccard" aria-roledescription="slide" aria-label="1 di 3">
+      <div class="ccard__media">
+        <div class="ph ph--hospital" role="img" aria-label="Segnaposto: foto della donazione da fornire"><span>Foto della consegna<br><small>autorizzata, da fornire</small></span></div>
+        <p class="ccard__stat"><b>3.000&nbsp;€</b><span>valore dei materiali donati</span></p>
+      </div>
+      <div class="ccard__body">
+        <p class="ccard__meta"><span>Dicembre 2025</span><span>Ospedale “Veris Delli Ponti”, Scorrano</span></p>
+        <h3 class="h3">Televisori, musica e un biliardino per il reparto di Psichiatria</h3>
+        <p>9 televisori, un amplificatore stereo e un biliardino per il benessere, lo svago e la socializzazione delle persone ricoverate. Fondi raccolti negli eventi estivi culminati con il Memorial del 21 agosto 2025.</p>
+        <a class="btn btn--gold" href="#">Scopri l'iniziativa <span aria-hidden="true">→</span></a>
+        <p class="src">Fonti: Il Gallo, 12/12/2025 · Corriere Salentino, 14/12/2025</p>
+      </div>
+    </article>
+
+    <article class="ccard ccard--ghost" aria-roledescription="slide" aria-label="2 di 3">
+      <div class="ghost-label">SEGNAPOSTO DI LAYOUT<br><small>nessuna iniziativa reale — mostra come appare il carosello con più schede</small></div>
+    </article>
+    <article class="ccard ccard--ghost" aria-roledescription="slide" aria-label="3 di 3">
+      <div class="ghost-label">SEGNAPOSTO DI LAYOUT</div>
+    </article>
+  </div>
+  <div class="wrap charity__foot">
+    <ol class="dots" aria-label="Posizione nel carosello"><li aria-current="true"><span class="visually-hidden">1</span></li><li><span class="visually-hidden">2</span></li><li><span class="visually-hidden">3</span></li></ol>
+    <a class="link-arrow link-arrow--light" href="#">Tutte le iniziative <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<!-- ============ 4. EVENTI ============ -->
+<section id="eventi" class="section events" aria-labelledby="eventi-title">
+  <div class="wrap">
+    <header class="events__head">
+      <p class="eyebrow-hand">Eventi</p>
+      <h2 id="eventi-title" class="h2">Ci vediamo<br><span class="mark mark--sky">in piazza</span></h2>
+      <span class="tag-prov">Titolo PROVVISORIO</span>
+    </header>
+
+    <ol class="timeline">
+      <li class="ecard">
+        <div class="ecard__poster">
+          <div class="ph ph--poster" role="img" aria-label="Segnaposto: locandina del Memorial da fornire"><span>Locandina<br><small>da fornire</small></span></div>
+        </div>
+        <div class="ecard__body">
+          <p class="ecard__date"><time datetime="2025-08-21"><b>21</b> agosto 2025</time></p>
+          <h3 class="h3">Memorial 2025</h3>
+          <p class="ecard__place">Luogo <em>da confermare</em></p>
+          <p>La serata che ha concluso gli eventi dell'estate 2025. Con quanto raccolto l'associazione ha poi donato i materiali al reparto di Psichiatria di Scorrano.</p>
+          <div class="ecard__actions">
+            <a class="btn btn--ink" href="#">Scopri di più</a>
+            <a class="link-arrow" href="album.html">Galleria foto evento <span aria-hidden="true">→</span></a>
+          </div>
+          <p class="note-prov">Nome ufficiale, luogo e programma dell'evento da confermare.</p>
+        </div>
+      </li>
+      <li class="ecard ecard--ghost">
+        <div class="ecard__poster"><div class="ph ph--poster2"><span>Locandina</span></div></div>
+        <div class="ecard__body">
+          <p class="ghost-inline">SEGNAPOSTO DI LAYOUT — prossimo evento (dati non disponibili)</p>
+          <div class="sk sk--l"></div><div class="sk"></div><div class="sk sk--s"></div>
+        </div>
+      </li>
+    </ol>
+    <p class="center"><a class="link-arrow" href="#">Tutti gli eventi <span aria-hidden="true">→</span></a></p>
+  </div>
+</section>
+
+<!-- ============ 5. FOTO ============ -->
+<section id="foto" class="section photos" aria-labelledby="foto-title">
+  <div class="wrap photos__grid">
+    <div class="photos__text">
+      <p class="eyebrow-hand">Foto</p>
+      <h2 id="foto-title" class="h2">Galleria<br>fotografica</h2>
+      <p class="lead">Ritrovati nelle foto delle nostre serate e scaricale, una alla volta o tutte insieme. Nessuna registrazione.</p>
+      <span class="tag-prov">Testo PROVVISORIO</span>
+    </div>
+    <a class="stack" href="album.html">
+      <span class="stack__photo stack__photo--3" aria-hidden="true"></span>
+      <span class="stack__photo stack__photo--2" aria-hidden="true"></span>
+      <span class="stack__photo stack__photo--1" aria-hidden="true"><span class="stack__img"></span></span>
+      <span class="stack__label">
+        <span class="stack__title">Apri gli album</span>
+        <span class="stack__sub">Foto organizzate per evento</span>
+        <span class="stack__go" aria-hidden="true">→</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ 6. SPONSOR ============ -->
+<section id="sponsor" class="section sponsors" aria-labelledby="sponsor-title">
+  <div class="wrap">
+    <p class="eyebrow-hand">Sponsor</p>
+    <h2 id="sponsor-title" class="h2 h2--sm">Chi cammina con noi</h2>
+    <p class="note-prov">Nessuno sponsor reale disponibile: i riquadri sono SEGNAPOSTO. Si mostrano le due varianti; la scelta dipende dal numero di loghi.</p>
+
+    <h3 class="variant-title">Variante A — pochi loghi (fino a ~8): griglia statica</h3>
+    <ul class="logo-grid">
+      <li><span class="logo-ph">Logo sponsor</span></li><li><span class="logo-ph">Logo sponsor</span></li>
+      <li><span class="logo-ph">Logo sponsor</span></li><li><span class="logo-ph">Logo sponsor</span></li>
+      <li><span class="logo-ph">Logo sponsor</span></li><li><span class="logo-ph">Logo sponsor</span></li>
+    </ul>
+
+    <h3 class="variant-title">Variante B — molti loghi: due righe in movimento contrario</h3>
+    <div class="marquee" data-paused="false">
+      <button class="marquee__pause" type="button" aria-pressed="false">Metti in pausa</button>
+      <ul class="visually-hidden" aria-label="Elenco sponsor"><li>(elenco testuale degli sponsor, letto dagli screen reader una sola volta)</li></ul>
+      <div class="marquee__row" aria-hidden="true"><div class="marquee__track">
+        <span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span>
+        <span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span>
+      </div></div>
+      <div class="marquee__row marquee__row--rev" aria-hidden="true"><div class="marquee__track">
+        <span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span>
+        <span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span><span class="logo-ph">Logo</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. RINGRAZIAMENTI + FOOTER ============ -->
+<section id="grazie" class="thanks" aria-labelledby="grazie-title">
+  <div class="wrap">
+    <h2 id="grazie-title" class="thanks__title">Grazie<span class="thanks__dot">.</span></h2>
+    <p class="thanks__text">A chi ha ballato, cucinato, montato un palco, comprato un biglietto o semplicemente è venuto. Ogni sorriso di quelle serate è diventato qualcosa di concreto.</p>
+    <span class="tag-prov tag-prov--dark">Testo PROVVISORIO — da scrivere con l'associazione</span>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div>
+      <img src="../assets/intro-figure.webp" alt="" width="88" height="88" class="footer__logo">
+      <p class="footer__name">Il Tuo Sorriso, il Nostro Ricordo</p>
+      <p class="footer__small">Associazione di volontariato · Martano (LE)<br><span class="tbd">Denominazione legale e C.F. da fornire</span></p>
+    </div>
+    <div>
+      <h3 class="footer__h">Contatti</h3>
+      <p class="tbd">Email, telefono e sede ufficiali da fornire</p>
+    </div>
+    <div>
+      <h3 class="footer__h">Social</h3>
+      <p><a href="https://www.instagram.com/ilvostrosorrisoilnostroricordo/" rel="noopener">Instagram</a> <span class="tbd">(account da confermare: username diverso dal nome)</span></p>
+    </div>
+    <div>
+      <h3 class="footer__h">Informazioni</h3>
+      <ul class="footer__links"><li><a href="#">Privacy</a></li><li><a href="#">Cookie</a> <span class="tbd">(se necessaria)</span></li></ul>
+    </div>
+  </div>
+  <p class="wrap footer__copy">© 2026 Il Tuo Sorriso, il Nostro Ricordo <span class="tbd">— titolarità da confermare</span></p>
+</footer>
+
+<script src="mockup.js"></script>
+</body>
+</html>
