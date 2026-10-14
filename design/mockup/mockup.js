@@ -10,8 +10,6 @@
   const track = $('#charity-track');
   const inits = [...publicInitiatives(), ...(demo ? D.demoInitiatives : [])];
   track.innerHTML = inits.map((i, n) => initiativeCard(i, n + 1, inits.length)).join('');
-  $('.dots').innerHTML = inits.map(() => '<li></li>').join('');
-  $('.charity').classList.toggle('charity--single', inits.length < 2);
   if (demo) $('.charity__head').insertAdjacentHTML('afterend', '<p class="wrap note-prov note-prov--dark">Variante DEMO NON PUBBLICABILE: le schede dimostrative servono solo a studiare il carosello con più card.</p>');
 
   $('#home-events').innerHTML = publicEvents().slice(0, 3).map(eventCard).join('');
@@ -134,26 +132,9 @@
   }, { rootMargin: '-45% 0px -50% 0px' });
   links.forEach(a => { const el = document.getElementById(a.dataset.section); if (el) io.observe(el); });
 
-  /* ---------- CAROSELLO BENEFICENZA ---------- */
-  const slides = $$('.ccard', track), dots = $$('.dots li'), btns = $$('.carousel-ctrl .icon-btn');
-  const idx = () => {
-    const pad = parseFloat(getComputedStyle(track).paddingLeft);
-    let best = 0, d = Infinity;
-    slides.forEach((s, i) => { const dd = Math.abs(s.offsetLeft - track.offsetLeft - pad - track.scrollLeft); if (dd < d) { d = dd; best = i; } });
-    return best;
-  };
-  const sync = () => {
-    const i = idx();
-    dots.forEach((d, j) => d.setAttribute('aria-current', String(i === j)));
-    btns[0].disabled = track.scrollLeft < 4;
-    btns[1].disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
-  };
-  btns.forEach(b => b.addEventListener('click', () => {
-    const i = Math.max(0, Math.min(slides.length - 1, idx() + Number(b.dataset.dir)));
-    track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft - parseFloat(getComputedStyle(track).paddingLeft), behavior: reduce ? 'auto' : 'smooth' });
-  }));
-  track.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
-  sync();
+  /* ---------- CAROSELLO BENEFICENZA (logica in sezioni.js) ---------- */
+  window.Sezioni.carousel($('.charity'));
+  window.Sezioni.posterZoom($('#eventi'));
 
   /* ---------- MARQUEE SPONSOR: pausa esplicita ---------- */
   $$('.marquee').forEach(m => {

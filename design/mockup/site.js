@@ -96,7 +96,7 @@
 
   const initiativeCard = (i, n, total) => i.demo ? `
     <article class="ccard ccard--demo"${total ? ` aria-roledescription="slide" aria-label="${n} di ${total}"` : ''}>
-      <div class="ccard__media">${ph('ph--poster2', 'Scheda dimostrativa')}</div>
+      <div class="ccard__media">${ph(['ph--warm', 'ph--sea', 'ph--poster'][(n || 1) % 3], 'Scheda dimostrativa')}</div>
       <div class="ccard__body">
         <span class="tag-prov">Demo non pubblicabile</span>
         <h3 class="h3">${esc(i.title)}</h3>
@@ -106,7 +106,7 @@
     </article>` : `
     <article class="ccard"${total ? ` aria-roledescription="slide" aria-label="${n} di ${total}"` : ''}>
       <div class="ccard__media">
-        ${i.image ? `<img src="${esc(i.image)}" alt="">` : ph('ph--hospital', 'Foto autorizzata della consegna')}
+        ${i.image ? `<img class="ccard__img" src="${esc(i.image)}" alt="" loading="lazy" draggable="false">` : ph('ph--hospital', 'Foto autorizzata della consegna')}
         <p class="ccard__stat"><b>${esc(i.dateLabel)}</b><span>${esc(i.place.split(',').pop().trim())}</span></p>
       </div>
       <div class="ccard__body">
@@ -118,16 +118,25 @@
       </div>
     </article>`;
 
-  const eventCard = e => {
+  /* Card evento (Home, archivio eventi). i = posizione nella lista: alterna sinistra/destra.
+     La locandina si può ingrandire (sezioni.js); il link alla galleria resta invariato. */
+  const eventCard = (e, i = 0) => {
     const album = publishedAlbum(e.album);
+    const past = e.date < new Date().toISOString().slice(0, 10);
+    const alt = e.poster ? `Illustrazione editoriale dell’evento: ${e.title}` : '';
     return `
-    <li class="ecard">
-      <div class="ecard__poster">${e.poster ? `<img src="${esc(e.poster)}" alt="Illustrazione editoriale dell’evento: ${esc(e.title)}">` : ph('ph--poster', 'Locandina')}</div>
+    <li class="ecard ${i % 2 ? 'ecard--right' : 'ecard--left'}">
+      <div class="ecard__poster">${e.poster
+        ? `<button type="button" class="poster-zoom" data-zoom="${esc(e.poster)}" data-zoom-alt="${esc(alt)}" aria-label="Ingrandisci l’immagine: ${esc(e.title)}"><img src="${esc(e.poster)}" alt="${esc(alt)}" loading="lazy"><span class="poster-zoom__hint" aria-hidden="true">Ingrandisci</span></button>`
+        : ph('ph--poster', 'Locandina')}</div>
       <div class="ecard__body">
         <p class="ecard__date"><time datetime="${esc(e.date)}"><b>${esc(e.day)}</b> ${esc(e.monthYear)}</time></p>
-        ${e.status === 'draft' ? '<span class="tag-prov">Bozza non pubblicata</span>' : ''}
+        <ul class="ecard__chips" aria-label="Dettagli">
+          ${e.kind ? `<li>${esc(e.kind)}</li>` : ''}<li class="ecard__chip--${past ? 'past' : 'next'}">${past ? 'Evento concluso' : 'In programma'}</li>
+          ${e.status === 'draft' ? '<li class="ecard__chip--draft">Bozza non pubblicata</li>' : ''}
+        </ul>
         <h3 class="h3">${esc(e.title)}</h3>
-        <p class="ecard__place">${e.place ? esc(e.place) : 'Luogo <em>da confermare</em>'}</p>
+        <p class="ecard__place"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></svg>${e.place ? esc(e.place) : 'Luogo <em>da confermare</em>'}</p>
         <p>${esc(e.summary)}</p>
         <div class="ecard__actions">
           <a class="btn btn--ink" href="${url.event(e.slug)}">Scopri di più<span class="visually-hidden">: ${esc(e.title)}</span></a>

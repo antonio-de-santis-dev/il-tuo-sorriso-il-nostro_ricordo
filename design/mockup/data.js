@@ -52,6 +52,7 @@
       {
         slug: 'memorial-2025',
         status: 'published',
+        kind: 'Raccolta fondi', // tipo di evento (etichetta della card)
         title: 'Memorial 2025',
         date: '2025-08-21',
         day: '21', monthYear: 'agosto 2025',
@@ -70,6 +71,7 @@
       },
       {
         slug: 'torneo-calcio-6-simone-2024',
+        kind: 'Sport e ricordo',
         status: 'published', // Evento documentato dalla testata Grecìa ta nea-ma; confermare eventuali dettagli organizzativi
         title: 'Torneo di calcio a 6 — In ricordo di Simone',
         date: '2024-06-17',
@@ -105,7 +107,8 @@
     /* Schede per studiare il carosello con più card (index.html?demo=carosello). Mai pubblicabili. */
     demoInitiatives: [
       { slug: 'demo-1', demo: true, title: 'Scheda dimostrativa', dateLabel: 'DEMO', place: 'Nessuna iniziativa reale', summary: 'Serve solo a vedere il carosello con più schede. Non è un contenuto dell’associazione.', items: [], sources: [] },
-      { slug: 'demo-2', demo: true, title: 'Scheda dimostrativa', dateLabel: 'DEMO', place: 'Nessuna iniziativa reale', summary: 'Serve solo a vedere il carosello con più schede. Non è un contenuto dell’associazione.', items: [], sources: [] }
+      { slug: 'demo-2', demo: true, title: 'Scheda dimostrativa', dateLabel: 'DEMO', place: 'Nessuna iniziativa reale', summary: 'Serve solo a vedere il carosello con più schede. Non è un contenuto dell’associazione.', items: [], sources: [] },
+      { slug: 'demo-3', demo: true, title: 'Scheda dimostrativa', dateLabel: 'DEMO', place: 'Nessuna iniziativa reale', summary: 'Serve solo a vedere il carosello con più schede. Non è un contenuto dell’associazione.', items: [], sources: [] }
     ]
   };
 })();

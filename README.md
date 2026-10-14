@@ -2,7 +2,7 @@
 
 Sito dell'associazione di volontariato di Martano (LE).
 
-**Stato: Fase A.3 (correzione) — contenuti reali documentati** (branch `fix/integrazione-contenuti-mockup`). Questo repository contiene specifiche e mockup da approvare. Il codice applicativo (React + Node.js) verrà scritto solo dopo l'approvazione dei mockup.
+**Stato: rifinitura di Beneficenza ed Eventi** (branch `fix/ultima`). Questo repository contiene specifiche e mockup da approvare. Il codice applicativo (React + Node.js) verrà scritto solo dopo l'approvazione dei mockup.
 
 ## Documenti
 
@@ -44,3 +44,18 @@ Il server locale serve **solo** per i test automatici (`design/tests/e2e.js`). G
 File principali in `design/mockup/`: `data.js` (catalogo contenuti), `site.js` (navbar, footer, schede comuni), `mockup.js` (Home), `pages.js` (pagine interne), `tokens.css`, `mockup.css`, `pages.css`.
 
 Test automatici: `design/tests/e2e.js` (istruzioni in testa al file). Screenshot in `design/screenshots/` (prefisso `a2-` per la Fase A.2, `a3-` per la Fase A.3).
+
+## Branch `fix/ultima` — solo Beneficenza ed Eventi
+
+Modifiche visive e funzionali **solo** a Beneficenza ed Eventi (Home e pagine interne). Hero, intro, navbar, Chi siamo, galleria fotografica, Sponsor, Ringraziamenti e footer sono **invariati**: verificato confrontando HTML e stili calcolati di ogni elemento (54 blocchi a 1440/768/390 px, 0 differenze).
+
+- **Carosello Beneficenza:** scheda attiva in evidenza, puntini cliccabili, contatore 01/04, tastiera (← → Home Fine), trascinamento col mouse, clic su una scheda laterale per portarla al centro, invito a scorrere su smartphone. La modalità dimostrativa (`index.html?demo=carosello`) mostra 4 schede: 1 reale + 3 **DEMO NON PUBBLICABILE**.
+- **Card:** le illustrazioni sono intere, mai tagliate.
+- **Eventi:** locandine come stampe appese (cornice e nastro), ingrandibili con un clic; etichette tipo/stato; luogo con icona; alternanza sinistra/destra anche fra gli anni.
+- **Archivi:** riepilogo, raggruppamento per anno, salto rapido all'anno.
+- **Dettaglio evento:** scheda “In breve” e navigazione evento precedente/successivo.
+- I link verso la galleria fotografica sono invariati.
+
+Nuovi file isolati: `design/mockup/sezioni.css` e `sezioni.js`, caricati solo da index, beneficenza, beneficenza-articolo, eventi, evento. File della galleria non toccati.
+
+Test: `node design/tests/e2e.js` → 217/217 su Chromium, desktop, tablet e mobile (WebKit non disponibile in questo ambiente). Screenshot `design/screenshots/ult-*`.

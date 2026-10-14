@@ -19,7 +19,7 @@ const VIEWPORTS = [
 
 async function suite(engine, b, vpName, opts) {
   const vp = `${engine}/${vpName}`;
-  const shot = (name, full = false) => engine === 'chromium' ? p.screenshot({ path: `${OUT}a3-${vpName}-${name}.png`, fullPage: full }) : null;
+  const shot = (name, full = false) => engine === 'chromium' ? p.screenshot({ path: `${OUT}ult-${vpName}-${name}.png`, fullPage: full }) : null;
   const ctx = await b.newContext(opts); const p = await ctx.newPage();
   const errs = [];
   p.on('pageerror', e => errs.push(e.message));
@@ -65,7 +65,15 @@ async function suite(engine, b, vpName, opts) {
   ok(`[${vp}] home: nessun href="#"`, (await p.$$('a[href="#"]')).length === 0);
   ok(`[${vp}] home: nessun importo €`, !(await p.evaluate(() => /€|3\.000|euro/i.test(document.body.innerText))));
   ok(`[${vp}] home: 1 iniziativa, frecce e puntini nascosti`, await p.evaluate(() => document.querySelectorAll('#charity-track .ccard').length === 1 && getComputedStyle(document.querySelector('.carousel-ctrl')).display === 'none'));
-  ok(`[${vp}] home: nessuna bozza`, !(await p.evaluate(() => /Torneo di calcio/.test(document.body.innerText))));
+  const draftTitles = await p.evaluate(() => window.SITE_DATA.events.filter(e => e.status === 'draft').map(e => e.title));
+  ok(`[${vp}] home: nessuna bozza`, !(await p.evaluate(t => t.some(x => document.body.innerText.includes(x)), draftTitles)));
+  ok(`[${vp}] home eventi: card alternate sinistra/destra`, await p.evaluate(() => { const c = [...document.querySelectorAll('#home-events .ecard')]; return c.length >= 1 && c.every((e, i) => e.classList.contains(i % 2 ? 'ecard--right' : 'ecard--left')); }));
+  await p.locator('#home-events').scrollIntoViewIfNeeded(); await p.waitForTimeout(400);
+  for (const el of await p.$$('#home-events .poster-zoom img')) { await el.scrollIntoViewIfNeeded(); await p.waitForTimeout(150); }
+  ok(`[${vp}] home eventi: locandine intere (nessun riquadro vuoto)`, await p.evaluate(() => [...document.querySelectorAll('#home-events .poster-zoom img')].every(i => i.complete && i.naturalWidth > 0 && getComputedStyle(i).objectFit === 'contain')));
+  // le immagini hanno caricamento differito: si scorre la pagina per farle caricare tutte
+  for (let y = 0; y < await p.evaluate(() => document.body.scrollHeight); y += 600) { await p.evaluate(v => scrollTo(0, v), y); await p.waitForTimeout(60); }
+  await p.waitForTimeout(300);
   ok(`[${vp}] immagini: tutte caricate`, await p.evaluate(() => [...document.images].every(i => i.complete && i.naturalWidth > 0)));
   await shot('home-full', true);
   if (engine === 'chromium' && vpName === 'desktop') {
@@ -115,12 +123,27 @@ async function suite(engine, b, vpName, opts) {
   ok(`[${vp}] album → evento (link inverso)`, (await p.$$('a[href="evento.html?slug=memorial-2025"]')).length === 1);
   await p.goto(B + 'eventi.html'); await shot('eventi', true); await noOverflow('eventi');
   ok(`[${vp}] eventi: stato vuoto "Prossimi"`, await p.isVisible('.empty'));
-  ok(`[${vp}] eventi: bozza esclusa`, !(await p.evaluate(() => /Torneo di calcio/.test(document.querySelector('#groups').innerText))));
-  await p.goto(B + 'eventi.html?bozze=1');
-  ok(`[${vp}] eventi?bozze=1: bozza visibile ed etichettata`, await p.isVisible('.group--draft') && /Bozza non pubblicata/i.test(await p.textContent('.group--draft')));
-  await p.click('.group--draft .btn'); await p.waitForLoadState();
-  ok(`[${vp}] pagina bozza: avviso "non pubblicata"`, await p.isVisible('.draft-banner'));
-  await shot('evento-bozza', true); await noOverflow('evento bozza');
+  ok(`[${vp}] eventi: nessuna bozza nell'archivio pubblico`, !(await p.evaluate(t => t.some(x => document.querySelector('#groups').innerText.includes(x)), draftTitles)));
+  const years = await p.$$eval('.year__label', l => l.map(e => e.textContent));
+  ok(`[${vp}] eventi: archivio diviso per anno, dal più recente`, years.length >= 1 && years.every((y, i) => i === 0 || y < years[i - 1]), years.join(','));
+  ok(`[${vp}] eventi: alternanza continua fra gli anni`, await p.evaluate(() => [...document.querySelectorAll('#groups .ecard')].every((e, i) => e.classList.contains(i % 2 ? 'ecard--right' : 'ecard--left'))));
+  if (years.length > 1) { await p.click(`.year-nav a[href="#anno-${years[1]}"]`); await p.waitForTimeout(900);
+    ok(`[${vp}] eventi: salto all'anno ${years[1]}`, await p.evaluate(y => { const r = document.getElementById('anno-' + y).getBoundingClientRect(); return r.top < innerHeight / 2 && r.top > -50; }, years[1])); }
+  await p.locator('#groups .poster-zoom').first().click(); await p.waitForTimeout(400);
+  ok(`[${vp}] locandina: si ingrandisce`, await p.evaluate(() => document.querySelector('.zoom-dialog')?.open === true));
+  await shot('eventi-zoom');
+  await p.keyboard.press('Escape'); await p.waitForTimeout(200);
+  ok(`[${vp}] locandina: Esc chiude e il focus torna`, await p.evaluate(() => !document.querySelector('.zoom-dialog').open && document.activeElement.classList.contains('poster-zoom')));
+  if (draftTitles.length) {
+    await p.goto(B + 'eventi.html?bozze=1');
+    ok(`[${vp}] eventi?bozze=1: bozza visibile ed etichettata`, await p.isVisible('.group--draft') && /Bozza non pubblicata/i.test(await p.textContent('.group--draft')));
+  }
+  await p.goto(B + 'evento.html?slug=memorial-2025');
+  ok(`[${vp}] evento: scheda "In breve" e navigazione fra eventi`, await p.isVisible('.fact') && (await p.$$('.event-pager__link')).length >= 1);
+  const pagerHref = await p.getAttribute('.event-pager__link', 'href');
+  await p.click('.event-pager__link'); await p.waitForLoadState();
+  ok(`[${vp}] evento: link all'evento precedente`, p.url().endsWith(pagerHref));
+  await shot('evento-2', true); await noOverflow('evento 2');
 
   // 4. Home → foto → catalogo → album → lightbox → selezione
   await p.goto(B + 'index.html'); await p.click('.stack'); await p.waitForLoadState();
@@ -150,12 +173,25 @@ async function suite(engine, b, vpName, opts) {
 
   // 5. Carosello con più card: variante DEMO NON PUBBLICABILE
   await p.goto(B + 'index.html?demo=carosello#beneficenza'); await p.waitForTimeout(600);
-  ok(`[${vp}] carosello demo: 3 schede, frecce visibili, demo etichettate`, (await p.$$('#charity-track .ccard')).length === 3 && await p.isVisible('.carousel-ctrl') && (await p.$$('.ccard--demo .tag-prov')).length === 2);
+  ok(`[${vp}] carosello demo: almeno 3 schede, frecce visibili, demo etichettate`, (await p.$$('#charity-track .ccard')).length >= 3 && await p.isVisible('.carousel-ctrl') && (await p.$$('.ccard--demo .tag-prov')).length === (await p.$$('#charity-track .ccard')).length - 1);
+  ok(`[${vp}] carosello demo: contatore e scheda attiva`, (await p.textContent('.carousel-count')).replace(/\s/g, '').startsWith('01/') && (await p.$$('.ccard.is-active')).length === 1);
   await p.click('.carousel-ctrl [data-dir="1"]'); await p.waitForTimeout(900);
   const sl1 = await p.$eval('#charity-track', t => t.scrollLeft);
   ok(`[${vp}] carosello demo: freccia avanti`, sl1 > 50, `scrollLeft=${sl1}`);
   await p.focus('#charity-track'); await p.keyboard.press('ArrowRight'); await p.waitForTimeout(700);
   ok(`[${vp}] carosello demo: frecce della tastiera`, (await p.$eval('#charity-track', t => t.scrollLeft)) > sl1);
+  await p.keyboard.press('Home'); await p.waitForTimeout(1500);
+  ok(`[${vp}] carosello demo: tasto Home torna alla prima`, (await p.$eval('#charity-track', t => t.scrollLeft)) < 5);
+  await p.locator('.dots__btn').nth(2).click(); await p.waitForTimeout(800);
+  ok(`[${vp}] carosello demo: puntino 3 → scheda 3`, (await p.textContent('.carousel-count__now')) === '03' && await p.evaluate(() => document.querySelectorAll('.ccard')[2].classList.contains('is-active')));
+  if (vpName === 'desktop') {
+    await p.locator('.dots__btn').nth(0).click(); await p.waitForTimeout(1600);
+    const box = await p.locator('#charity-track').boundingBox();
+    await p.mouse.move(box.x + box.width * .6, box.y + 150); await p.mouse.down(); await p.mouse.move(box.x + box.width * .2, box.y + 150, { steps: 8 }); await p.mouse.up(); await p.waitForTimeout(900);
+    ok(`[${vp}] carosello demo: trascinamento col mouse`, (await p.textContent('.carousel-count__now')) === '02');
+    await p.locator('#charity-track .ccard').nth(0).click(); await p.waitForTimeout(800);
+    ok(`[${vp}] carosello demo: clic su scheda laterale la porta al centro`, (await p.textContent('.carousel-count__now')) === '01' && p.url().includes('index.html'));
+  }
   await shot('carosello-demo');
 
   // Menu mobile
@@ -180,7 +216,7 @@ async function suite(engine, b, vpName, opts) {
   ok('[reduced-motion] nessuna intro, nessun blocco', await p.evaluate(() => document.querySelector('.hero').classList.contains('is-done') && !document.documentElement.classList.contains('intro-lock')));
 
   // Link morti su tutte le pagine
-  const pages = ['index.html', 'index.html?demo=carosello', 'beneficenza.html', 'beneficenza-articolo.html?slug=donazione-spdc-scorrano-2025', 'eventi.html', 'eventi.html?bozze=1', 'evento.html?slug=memorial-2025', 'evento.html?slug=torneo-calcio-6-simone-2024', 'foto.html', 'album.html?slug=memorial-2025', 'album.html?slug=demo-album-grande', 'foto.html?demo=1', 'privacy.html'];
+  const pages = ['index.html', 'index.html?demo=carosello', 'evento.html?slug=torneo-calcio-6-simone-2024', 'beneficenza.html', 'beneficenza-articolo.html?slug=donazione-spdc-scorrano-2025', 'eventi.html', 'eventi.html?bozze=1', 'evento.html?slug=memorial-2025', 'foto.html', 'album.html?slug=memorial-2025', 'album.html?slug=demo-album-grande', 'foto.html?demo=1', 'privacy.html'];
   const dead = [];
   for (const pg of pages) {
     await p.goto(B + pg);

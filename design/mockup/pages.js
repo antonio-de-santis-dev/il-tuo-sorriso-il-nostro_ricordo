@@ -12,14 +12,30 @@
   const empty = (title, text) => `<div class="empty"><p class="empty__title">${esc(title)}</p><p>${text}</p></div>`;
   const editorial = notes => notes?.length ? `<div class="note-prov"><strong>Note redazionali (non pubblicabili):</strong><ul>${notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>` : '';
 
+  /* Raggruppa per anno (dal più recente) */
+  const byYear = list => list.reduce((m, x) => { const y = x.date.slice(0, 4); (m.get(y) || m.set(y, []).get(y)).push(x); return m; }, new Map());
+  const yearNav = years => years.length > 1 ? `<nav class="year-nav" aria-label="Vai all’anno"><ul>${years.map(y => `<li><a href="#anno-${y}">${y}</a></li>`).join('')}</ul></nav>` : '';
+  const zoomBtn = (src, alt, label) => `<button type="button" class="poster-zoom" data-zoom="${esc(src)}" data-zoom-alt="${esc(alt)}" aria-label="Ingrandisci l’immagine: ${esc(label)}"><img src="${esc(src)}" alt="${esc(alt)}"><span class="poster-zoom__hint" aria-hidden="true">Ingrandisci</span></button>`;
+  const thumb = (src, phClass, phLabel) => src ? `<img src="${esc(src)}" alt="">` : S.ph(phClass, phLabel);
+
   /* ---------- /beneficenza ---------- */
   if (page === 'beneficenza') {
     const list = $('#list');
     const items = S.publicInitiatives(); // ordine cronologico, dalla più recente
-    list.innerHTML = items.length
-      ? items.map(i => `<li>${S.initiativeCard(i)}</li>`).join('')
-      : `<li>${empty('Nessuna iniziativa pubblicata', 'Le iniziative compariranno qui dopo l’approvazione dei testi.')}</li>`;
-    if (items.length === 1) list.insertAdjacentHTML('afterend', `<div class="note-prov" style="margin-top:var(--s-6)"><strong>Nota redazionale (non pubblicabile):</strong> a oggi è documentata una sola iniziativa di beneficenza dell’associazione. Non c’è base sufficiente per altre schede: verranno aggiunte solo con fonti o materiali forniti dall’associazione.</div>`);
+    if (!items.length) {
+      list.innerHTML = `<li>${empty('Nessuna iniziativa pubblicata', 'Le iniziative compariranno qui dopo l’approvazione dei testi.')}</li>`;
+    } else {
+      const groups = byYear(items);
+      list.outerHTML = `
+        <p class="archive-summary"><b>${items.length}</b> ${items.length === 1 ? 'iniziativa documentata' : 'iniziative documentate'} · ${items.length === 1 ? esc(items[0].dateLabel.toLowerCase()) : `dal ${esc(items[items.length - 1].dateLabel.toLowerCase())} al ${esc(items[0].dateLabel.toLowerCase())}`}</p>
+        ${yearNav([...groups.keys()])}
+        ${[...groups].map(([y, list]) => `
+        <section class="year" id="anno-${y}" aria-labelledby="y-${y}">
+          <h2 class="year__label" id="y-${y}">${y}</h2>
+          <ul class="archive-list">${list.map(i => `<li>${S.initiativeCard(i)}</li>`).join('')}</ul>
+        </section>`).join('')}`;
+      if (items.length === 1) $('.year:last-of-type').insertAdjacentHTML('afterend', `<div class="note-prov" style="margin-top:var(--s-6)"><strong>Nota redazionale (non pubblicabile):</strong> a oggi è documentata una sola iniziativa di beneficenza dell’associazione. Non c’è base sufficiente per altre schede: verranno aggiunte solo con fonti o materiali forniti dall’associazione.</div>`);
+    }
   }
 
   /* ---------- /beneficenza/:slug ---------- */
@@ -38,7 +54,7 @@
       </div></section>
       <div class="page-body"><div class="wrap article">
         <article class="article__main">
-          <figure class="article__media">${i.image ? `<img src="${esc(i.image)}" alt="">` : S.ph('ph--hospital', 'Foto autorizzata della consegna (senza pazienti riconoscibili)')}</figure>
+          <figure class="article__media">${i.image ? zoomBtn(i.image, 'Illustrazione editoriale dell’iniziativa', i.title) : S.ph('ph--hospital', 'Foto autorizzata della consegna (senza pazienti riconoscibili)')}</figure>
           <p class="lead">${esc(i.summary)}</p>
           ${i.body.map(p => `<p>${esc(p)}</p>`).join('')}
           ${i.timeline?.length ? `<section class="steps" aria-labelledby="steps-title"><h2 id="steps-title" class="related__kicker">Le tappe</h2><ol>${i.timeline.map(t => `
@@ -47,7 +63,7 @@
           ${ev && ev.status === 'published' ? `<aside class="related" aria-labelledby="rel-title">
             <h2 id="rel-title" class="related__kicker">Evento di raccolta fondi collegato</h2>
             <a class="related__card" href="${url.event(ev.slug)}">
-              <span class="related__thumb">${S.ph('ph--poster', 'Locandina')}</span>
+              <span class="related__thumb">${thumb(ev.poster, 'ph--poster', 'Locandina')}</span>
               <span><span class="related__kicker">${esc(ev.day)} ${esc(ev.monthYear)}</span><span class="related__title">${esc(ev.title)}</span></span>
               <span class="related__go" aria-hidden="true">→</span>
             </a></aside>` : ''}
@@ -63,6 +79,7 @@
           ${sourcesBox(i.sources)}
         </div>
       </div></div>`;
+      window.Sezioni?.posterZoom(root);
     }
   }
 
@@ -70,15 +87,31 @@
   if (page === 'eventi') {
     const all = S.publicEvents(), drafts = param('bozze') === '1' ? D.events.filter(e => e.status === 'draft') : [];
     const next = all.filter(e => e.date >= today).reverse(), past = all.filter(e => e.date < today);
-    const group = (title, list, emptyHtml) => `<section class="group" aria-labelledby="g-${title}">
-      <h2 class="group-title" id="g-${title}">${title} <small>${list.length ? `${list.length} ${list.length === 1 ? 'evento' : 'eventi'}` : ''}</small></h2>
-      ${list.length ? `<ol class="timeline">${list.map(S.eventCard).join('')}</ol>` : emptyHtml}</section>`;
-    $('#groups').innerHTML =
-      group('Prossimi', next, empty('Nessun evento annunciato', 'Quando ci sarà una nuova data la troverai qui. Nel frattempo segui l’associazione su <a href="https://www.instagram.com/ilvostrosorrisoilnostroricordo/" rel="noopener" target="_blank">Instagram</a>.')) +
-      group('Passati', past, empty('Nessun evento passato', 'L’archivio è vuoto.')) +
-      (drafts.length ? `<section class="group group--draft" aria-labelledby="g-bozze"><h2 class="group-title" id="g-bozze">Bozze redazionali <small>non pubblicabili, visibili solo in revisione</small></h2>
-        <ol class="timeline">${drafts.map(S.eventCard).join('')}</ol></section>`
-        : `<p class="review-link"><a href="eventi.html?bozze=1">Revisione: mostra le bozze non pubblicate</a></p>`);
+    const pastYears = byYear(past);
+    let k = 0; // indice globale: alternanza sinistra/destra continua fra gli anni
+    const cards = list => list.map(e => S.eventCard(e, k++)).join('');
+    const count = n => n ? `${n} ${n === 1 ? 'evento' : 'eventi'}` : '';
+    $('#groups').innerHTML = `
+      <div class="events-overview">
+        <p class="archive-summary"><b>${all.length}</b> ${all.length === 1 ? 'evento documentato' : 'eventi documentati'}${past.length ? (past[0].date.slice(0, 4) === past[past.length - 1].date.slice(0, 4) ? ` · ${esc(past[0].date.slice(0, 4))}` : ` · dal ${esc(past[past.length - 1].date.slice(0, 4))} al ${esc(past[0].date.slice(0, 4))}`) : ''}</p>
+        <nav class="year-nav" aria-label="Vai a"><ul><li><a href="#g-prossimi">Prossimi</a></li>${[...pastYears.keys()].map(y => `<li><a href="#anno-${y}">${y}</a></li>`).join('')}</ul></nav>
+      </div>
+      <section class="group" aria-labelledby="g-prossimi">
+        <h2 class="group-title" id="g-prossimi">Prossimi <small>${count(next.length)}</small></h2>
+        ${next.length ? `<ol class="timeline">${cards(next)}</ol>` : empty('Nessun evento annunciato', 'Quando ci sarà una nuova data la troverai qui. Nel frattempo segui l’associazione su <a href="https://www.instagram.com/ilvostrosorrisoilnostroricordo/" rel="noopener" target="_blank">Instagram</a>.')}
+      </section>
+      <section class="group" aria-labelledby="g-passati">
+        <h2 class="group-title" id="g-passati">Passati <small>${count(past.length)}</small></h2>
+        ${past.length ? [...pastYears].map(([y, list]) => `
+          <section class="year" id="anno-${y}" aria-labelledby="y-${y}">
+            <h3 class="year__label" id="y-${y}">${y}</h3>
+            <ol class="timeline">${cards(list)}</ol>
+          </section>`).join('') : empty('Nessun evento passato', 'L’archivio è vuoto.')}
+      </section>
+      ${drafts.length ? `<section class="group group--draft" aria-labelledby="g-bozze"><h2 class="group-title" id="g-bozze">Bozze redazionali <small>non pubblicabili, visibili solo in revisione</small></h2>
+        <ol class="timeline">${cards(drafts)}</ol></section>`
+        : `<p class="review-link"><a href="eventi.html?bozze=1">Revisione: mostra le bozze non pubblicate</a></p>`}`;
+    window.Sezioni?.posterZoom($('#groups'));
   }
 
   /* ---------- /eventi/:slug ---------- */
@@ -89,14 +122,20 @@
       setTitle(e.title);
       const album = publishedAlbum(e.album), ini = e.initiative && find('initiatives', e.initiative);
       const draft = e.status === 'draft';
+      const past = e.date < today;
+      // evento precedente / successivo in ordine cronologico (solo eventi pubblicati)
+      const chrono = S.publicEvents().slice().reverse(), at = chrono.findIndex(x => x.slug === e.slug);
+      const before = !draft && at > 0 ? chrono[at - 1] : null, after = !draft && at >= 0 && at < chrono.length - 1 ? chrono[at + 1] : null;
+      const alt = `Illustrazione editoriale dell’evento: ${e.title}`;
       root.innerHTML = `
       ${draft ? `<div class="draft-banner" role="note"><div class="wrap"><strong>BOZZA NON PUBBLICATA.</strong> Questa scheda non compare nel sito pubblico finché l’associazione non conferma i dati. <a href="eventi.html?bozze=1">Torna alle bozze</a></div></div>` : ''}
       <section class="page-head" aria-labelledby="page-title"><div class="wrap">
         ${crumbs([['index.html', 'Home'], ['eventi.html', 'Eventi'], [null, e.title]])}
         <div class="event-hero">
-          <div class="ecard__poster">${e.poster ? `<img src="${esc(e.poster)}" alt="Locandina: ${esc(e.title)}">` : S.ph('ph--poster', 'Locandina autorizzata')}</div>
+          <div class="ecard__poster">${e.poster ? zoomBtn(e.poster, alt, e.title) : S.ph('ph--poster', 'Locandina autorizzata')}</div>
           <div>
             <p class="ecard__date"><time datetime="${esc(e.date)}"><b>${esc(e.day)}</b> ${esc(e.monthYear)}</time></p>
+            <ul class="ecard__chips" aria-label="Dettagli">${e.kind ? `<li>${esc(e.kind)}</li>` : ''}<li class="ecard__chip--${past ? 'past' : 'next'}">${past ? 'Evento concluso' : 'In programma'}</li></ul>
             <h1 id="page-title" class="h2">${esc(e.title)}</h1>
             <p class="ecard__place">${e.place ? esc(e.place) : 'Luogo <em>da confermare</em>'}</p>
             <p class="note-prov">Da confermare: ${esc(e.provisional.join(', '))}.</p>
@@ -106,7 +145,15 @@
       <div class="page-body"><div class="wrap">
         <div class="article">
           <div class="article__main">${e.body.map(p => `<p>${esc(p)}</p>`).join('')}</div>
-          <div class="article__aside">${e.sources?.length ? sourcesBox(e.sources) : ''}</div>
+          <div class="article__aside">
+            <section class="fact" aria-labelledby="fact-title"><h2 id="fact-title">In breve</h2><dl>
+              <div><dt>Quando</dt><dd>${esc(e.day)} ${esc(e.monthYear)}</dd></div>
+              <div><dt>Dove</dt><dd>${e.place ? esc(e.place) : 'Da confermare'}</dd></div>
+              ${e.kind ? `<div><dt>Tipo</dt><dd>${esc(e.kind)}</dd></div>` : ''}
+              ${ini ? `<div><dt>${esc(e.initiativeRelation || 'Iniziativa collegata')}</dt><dd><a href="${url.initiative(ini.slug)}">${esc(ini.title)}</a></dd></div>` : ''}
+            </dl></section>
+            ${e.sources?.length ? sourcesBox(e.sources) : ''}
+          </div>
         </div>
         ${album ? `<a class="gallery-cta" href="${url.album(album.slug)}">
             <span><span class="gallery-cta__title">Galleria foto evento</span><span>${album.preview ? '<span class="sim">anteprima · foto non ancora caricate</span>' : `${album.demoCount} foto · <span class="sim">segnaposto</span>`}</span></span>
@@ -114,12 +161,17 @@
         ${ini ? `<aside class="related" aria-labelledby="rel-title">
             <h2 id="rel-title" class="related__kicker">${esc(e.initiativeRelation || 'Iniziativa collegata')}</h2>
             <a class="related__card" href="${url.initiative(ini.slug)}">
-              <span class="related__thumb">${S.ph('ph--hospital', 'Foto')}</span>
+              <span class="related__thumb">${thumb(ini.image, 'ph--hospital', 'Foto')}</span>
               <span><span class="related__kicker">${esc(ini.dateLabel)}</span><span class="related__title">${esc(ini.title)}</span></span>
               <span class="related__go" aria-hidden="true">→</span>
             </a></aside>` : ''}
+        ${before || after ? `<nav class="event-pager" aria-label="Altri eventi">
+          ${before ? `<a class="event-pager__link" href="${url.event(before.slug)}" rel="prev"><span class="event-pager__dir">← Evento precedente</span><span class="event-pager__title">${esc(before.title)}</span><span class="event-pager__date">${esc(before.day)} ${esc(before.monthYear)}</span></a>` : '<span></span>'}
+          ${after ? `<a class="event-pager__link event-pager__link--next" href="${url.event(after.slug)}" rel="next"><span class="event-pager__dir">Evento successivo →</span><span class="event-pager__title">${esc(after.title)}</span><span class="event-pager__date">${esc(after.day)} ${esc(after.monthYear)}</span></a>` : ''}
+        </nav>` : ''}
         <p><a class="back-link" href="${draft ? 'eventi.html?bozze=1' : 'eventi.html'}"><span aria-hidden="true">←</span> Tutti gli eventi</a></p>
       </div></div>`;
+      window.Sezioni?.posterZoom(root);
     }
   }
 
