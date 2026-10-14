@@ -4,193 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>MOCKUP · Album — Il Tuo Sorriso, il Nostro Ricordo</title>
+<title>Album · Il Tuo Sorriso, il Nostro Ricordo</title>
+<link rel="icon" href="../assets/intro-figure.webp" type="image/webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat+Brush&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="mockup.css">
-<style>
-  .album-hero { padding: calc(var(--nav-h) + var(--s-7)) 0 var(--s-6); background: var(--c-sand); }
-  .crumbs { font-size: var(--fs-small); margin: 0 0 var(--s-4); }
-  .crumbs a { color: var(--c-sea-text); font-weight: 700; }
-  .album-meta { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; color: var(--c-ink-soft); font-weight: 700; margin: 0; }
-  .album-meta a { font-weight: 800; }
-
-  .toolbar { position: sticky; top: var(--nav-h); z-index: 20; background: rgba(255,248,238,.95); border-bottom: 1px solid rgba(17,35,24,.1); }
-  .toolbar__in { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; min-height: 64px; padding-block: .5rem; }
-  .toolbar__count { font-weight: 800; margin-right: auto; }
-  .tbtn { min-height: 44px; padding: .5rem 1rem; border-radius: var(--r-pill); border: 2px solid var(--c-ink); background: transparent; color: var(--c-ink); font: 800 .9rem/1 var(--f-body); cursor: pointer; }
-  .tbtn[aria-pressed="true"] { background: var(--c-ink); color: var(--c-cream); }
-  .tbtn--primary { background: var(--c-gold); border-color: var(--c-gold); color: var(--c-palm); }
-  .tbtn:disabled { opacity: .4; cursor: not-allowed; }
-
-  .grid { list-style: none; margin: var(--s-6) auto var(--s-9); padding-inline: var(--gutter); max-width: var(--maxw); display: grid; grid-template-columns: repeat(auto-fill, minmax(min(46%, 220px), 1fr)); gap: clamp(6px, 1vw, 14px); }
-  .tile { position: relative; aspect-ratio: 1; border-radius: var(--r-sm); overflow: hidden; }
-  .tile__open { all: unset; display: block; width: 100%; height: 100%; cursor: zoom-in; }
-  .tile__open:focus-visible { outline: var(--focus); outline-offset: -3px; }
-  .tile__img { width: 100%; height: 100%; transition: transform var(--d-base) var(--ease-out); }
-  .tile:hover .tile__img { transform: scale(1.03); }
-  .tile__check { position: absolute; top: 8px; left: 8px; width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer; }
-  .tile__check input { appearance: none; -webkit-appearance: none; margin: 0; width: 28px; height: 28px; border-radius: 50%; border: 2.5px solid #fff; background: rgba(17,35,24,.35); box-shadow: 0 1px 4px rgba(0,0,0,.4); cursor: pointer; display: grid; place-items: center; transition: background-color var(--d-fast), transform var(--d-fast) var(--ease-out); }
-  .tile__check input:checked { background: var(--c-gold); border-color: var(--c-palm); }
-  .tile__check input:checked::after { content: ""; width: 10px; height: 6px; border: solid var(--c-palm); border-width: 0 0 3px 3px; transform: translateY(-2px) rotate(-45deg); }
-  .tile__check input:active { transform: scale(.9); }
-  .tile__check input:focus-visible { outline: 3px solid var(--c-gold); outline-offset: 2px; }
-  body:not(.selecting) .tile__check { opacity: 0; }
-  body:not(.selecting) .tile:hover .tile__check, body:not(.selecting) .tile:focus-within .tile__check { opacity: 1; }
-  @media (hover: none) { body:not(.selecting) .tile__check { opacity: 1; } }
-  .tile:has(input:checked) { outline: 4px solid var(--c-gold); outline-offset: -4px; }
-  .tile:has(input:checked) .tile__img { transform: scale(.92); border-radius: 6px; }
-
-  .actionbar { position: fixed; z-index: 40; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); transform: translate(-50%, 160%); transition: transform var(--d-base) var(--ease-out); background: var(--c-palm); color: var(--c-cream); border-radius: var(--r-lg); padding: .75rem .75rem .75rem 1.25rem; display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-card); width: min(560px, calc(100% - 24px)); }
-  .actionbar.is-visible { transform: translate(-50%, 0); }
-  .actionbar__txt { margin-right: auto; font-weight: 700; font-size: .95rem; line-height: 1.3; }
-  .actionbar__txt small { display: block; opacity: .75; font-weight: 600; }
-
-  .lb { position: fixed; inset: 0; z-index: 80; background: rgba(8,16,11,.96); color: var(--c-cream); display: grid; grid-template-rows: auto 1fr auto; }
-  .lb[hidden] { display: none; }
-  .lb__top, .lb__bottom { display: flex; align-items: center; gap: .75rem; padding: .75rem var(--gutter); padding-top: max(.75rem, env(safe-area-inset-top)); }
-  .lb__bottom { padding-bottom: max(.75rem, env(safe-area-inset-bottom)); justify-content: center; }
-  .lb__pos { margin-right: auto; font-weight: 800; }
-  .lb__stage { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .5rem; padding-inline: .5rem; min-height: 0; }
-  .lb__img { justify-self: center; width: min(100%, 78vh); aspect-ratio: 1; border-radius: 6px; }
-  .lb .icon-btn { color: var(--c-cream); }
-  .lb .tbtn { border-color: var(--c-cream); color: var(--c-cream); }
-  .lb .tbtn--primary { color: var(--c-palm); border-color: var(--c-gold); }
-  @media (max-width: 600px) { .lb__stage { grid-template-columns: 1fr; } .lb__stage .icon-btn { display: none; } .lb__bottom .icon-btn { display: grid; } }
-  @media (min-width: 601px) { .lb__bottom .icon-btn { display: none; } }
-
-  .toast { position: fixed; z-index: 95; left: 50%; top: calc(var(--nav-h) + 52px); transform: translateX(-50%); background: #fff; color: var(--c-ink); border-left: 6px solid var(--c-sea); padding: .75rem 1rem; border-radius: var(--r-sm); box-shadow: var(--shadow-card); font-weight: 700; max-width: calc(100% - 24px); }
-  .toast[hidden] { display: none; }
-</style>
+<link rel="stylesheet" href="pages.css">
 </head>
-<body class="album">
+<body data-page="album" data-section="foto">
 <a class="skip-link" href="#main">Vai al contenuto</a>
-<div class="mockup-flag" role="note">MOCKUP — album di ESEMPIO, foto segnaposto</div>
-
-<header class="nav" data-state="solid">
-  <div class="nav__inner">
-    <a class="nav__logo" href="index.html#top" aria-label="Torna alla Home">
-      <img src="../assets/intro-figure.webp" alt="" width="48" height="48">
-      <span class="nav__name">Il Tuo Sorriso,<br>il Nostro Ricordo</span>
-    </a>
-    <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu"><span class="nav__toggle-bars" aria-hidden="true"></span><span class="nav__toggle-label">Menu</span></button>
-    <nav id="nav-menu" class="nav__menu" aria-label="Principale">
-      <ul>
-        <li><a href="index.html#top">Home</a></li>
-        <li><a href="index.html#chi-siamo">Chi siamo</a></li>
-        <li><a href="index.html#beneficenza">Beneficenza</a></li>
-        <li><a href="index.html#eventi">Eventi</a></li>
-        <li><a href="index.html#foto" aria-current="true">Foto</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+<div class="mockup-flag" role="note">MOCKUP — foto segnaposto, download simulati</div>
+<header class="nav" data-state="solid"></header>
 
 <main id="main">
-  <section class="album-hero">
-    <div class="wrap">
-      <p class="crumbs"><a href="index.html#foto">Foto</a> / Memorial 2025</p>
-      <h1 class="h2">Memorial 2025</h1>
-      <p class="album-meta"><span>21 agosto 2025</span><span>48 foto (esempio)</span><a href="#">Vai all'evento →</a></p>
-    </div>
-  </section>
-
-  <div class="toolbar">
-    <div class="wrap toolbar__in">
-      <p class="toolbar__count" aria-live="polite"><span id="count">0</span> selezionate</p>
-      <button class="tbtn" id="select-mode" aria-pressed="false">Seleziona</button>
-      <button class="tbtn" id="select-all">Seleziona tutte</button>
-    </div>
-  </div>
-
-  <ul class="grid" id="grid" aria-label="Foto dell'album"></ul>
+<div id="page"></div>
 </main>
 
-<div class="actionbar" id="actionbar" role="region" aria-label="Download selezione">
-  <p class="actionbar__txt"><span id="ab-count">0 foto</span><small id="ab-size">≈ 0 MB · max 50 foto / 500 MB per ZIP</small></p>
-  <button class="tbtn" id="clear" style="border-color:var(--c-cream);color:var(--c-cream)">Annulla</button>
-  <button class="tbtn tbtn--primary" id="zip">Scarica ZIP</button>
-</div>
-
-<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Visualizzatore foto">
-  <div class="lb__top">
-    <p class="lb__pos" id="lb-pos">1 / 48</p>
-    <button class="tbtn tbtn--primary" id="lb-dl">Scarica originale</button>
-    <button class="icon-btn" id="lb-close" aria-label="Chiudi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
-  </div>
-  <div class="lb__stage">
-    <button class="icon-btn" data-step="-1" aria-label="Foto precedente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div class="lb__img" id="lb-img" role="img" aria-label=""></div>
-    <button class="icon-btn" data-step="1" aria-label="Foto successiva"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  </div>
-  <div class="lb__bottom">
-    <button class="icon-btn" data-step="-1" aria-label="Foto precedente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <label class="tbtn" style="display:inline-flex;gap:.5rem;align-items:center"><input type="checkbox" id="lb-sel"> Seleziona</label>
-    <button class="icon-btn" data-step="1" aria-label="Foto successiva"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  </div>
-</div>
-
-<div class="toast" id="toast" role="status" hidden></div>
-
-<script>
-(() => {
-  const N = 48, MAX = 50, MB = 4.2;
-  const pal = [['#F39C33','#c86b1c'],['#28A0B2','#1B6E82'],['#32A5C2','#34593C'],['#F7C552','#F39C33'],['#34593C','#112318'],['#28A0B2','#F7C552']];
-  const grid = document.getElementById('grid');
-  const bg = i => { const [a,b] = pal[i % pal.length]; return `radial-gradient(circle at ${20 + (i*37)%60}% ${30 + (i*53)%50}%, rgba(255,248,238,.55), transparent 35%), linear-gradient(${(i*47)%360}deg, ${a}, ${b})`; };
-  for (let i = 0; i < N; i++) {
-    grid.insertAdjacentHTML('beforeend', `<li class="tile">
-      <button class="tile__open" data-i="${i}" aria-label="Apri foto ${i+1} di ${N}"><div class="tile__img" style="background:${bg(i)}"></div></button>
-      <label class="tile__check"><input type="checkbox" data-i="${i}" aria-label="Seleziona foto ${i+1}"></label></li>`);
-  }
-  const boxes = [...grid.querySelectorAll('input')];
-  const toast = msg => { const t = document.getElementById('toast'); t.textContent = msg; t.hidden = false; clearTimeout(t._h); t._h = setTimeout(() => t.hidden = true, 3200); };
-  const sync = () => {
-    const n = boxes.filter(b => b.checked).length;
-    document.getElementById('count').textContent = n;
-    document.getElementById('ab-count').textContent = `${n} foto selezionate`;
-    document.getElementById('ab-size').textContent = `≈ ${(n*MB).toFixed(0)} MB · max ${MAX} foto per ZIP`;
-    document.getElementById('actionbar').classList.toggle('is-visible', n > 0);
-    document.getElementById('select-all').textContent = n === N ? 'Deseleziona tutte' : 'Seleziona tutte';
-  };
-  grid.addEventListener('change', sync);
-  document.getElementById('select-mode').addEventListener('click', e => {
-    const on = e.currentTarget.getAttribute('aria-pressed') !== 'true';
-    e.currentTarget.setAttribute('aria-pressed', on); document.body.classList.toggle('selecting', on);
-  });
-  document.getElementById('select-all').addEventListener('click', () => { const all = boxes.every(b => b.checked); boxes.forEach(b => b.checked = !all); document.body.classList.add('selecting'); sync(); });
-  document.getElementById('clear').addEventListener('click', () => { boxes.forEach(b => b.checked = false); sync(); });
-  document.getElementById('zip').addEventListener('click', () => toast('Mockup: qui partirebbe il download ZIP con barra di avanzamento (nessun file reale).'));
-
-  // Lightbox
-  const lb = document.getElementById('lb'), img = document.getElementById('lb-img'), sel = document.getElementById('lb-sel');
-  let cur = 0, opener = null;
-  const show = i => { cur = (i + N) % N; img.style.background = bg(cur); img.setAttribute('aria-label', `Foto ${cur+1} (segnaposto)`); document.getElementById('lb-pos').textContent = `${cur+1} / ${N}`; sel.checked = boxes[cur].checked; };
-  const open = (i, el) => { opener = el; show(i); lb.hidden = false; document.body.style.overflow = 'hidden'; document.getElementById('lb-close').focus(); };
-  const close = () => { lb.hidden = true; document.body.style.overflow = ''; opener && opener.focus(); };
-  grid.addEventListener('click', e => { const b = e.target.closest('.tile__open'); if (!b) return;
-    if (document.body.classList.contains('selecting')) { const c = boxes[+b.dataset.i]; c.checked = !c.checked; sync(); } else open(+b.dataset.i, b); });
-  lb.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => show(cur + +b.dataset.step)));
-  document.getElementById('lb-close').addEventListener('click', close);
-  document.getElementById('lb-dl').addEventListener('click', () => toast('Mockup: download dell\'originale tramite /api/photos/:id/download.'));
-  sel.addEventListener('change', () => { boxes[cur].checked = sel.checked; sync(); });
-  addEventListener('keydown', e => {
-    if (lb.hidden) return;
-    if (e.key === 'Escape') close();
-    if (e.key === 'ArrowRight') show(cur + 1);
-    if (e.key === 'ArrowLeft') show(cur - 1);
-    if (e.key === 'Tab') { const f = [...lb.querySelectorAll('button, input')].filter(x => x.offsetParent); const first = f[0], last = f[f.length-1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } }
-  });
-  let x0 = null; lb.addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
-  lb.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); x0 = null; });
-
-  // Menu mobile (stesso comportamento della Home)
-  const t = document.querySelector('.nav__toggle'), m = document.getElementById('nav-menu');
-  t.addEventListener('click', () => { const o = t.getAttribute('aria-expanded') !== 'true'; t.setAttribute('aria-expanded', o); m.classList.toggle('is-open', o); });
-})();
-</script>
+<footer class="footer"></footer>
+<script src="data.js"></script>
+<script src="site.js"></script>
+<script src="pages.js"></script>
 </body>
 </html>
