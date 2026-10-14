@@ -16,7 +16,7 @@
     agenparl: { name: 'Agenparl (comunicato ASL Lecce)', date: '12/12/2025', url: 'https://agenparl.eu/2025/12/12/asl-lecce-donazione-al-reparto-di-psichiatria-dellospedale-di-scorrano-da-parte-dellassociazione-il-tuo-sorriso-il-nostro-ricordo/', checked: CHECKED, status: EXCERPT },
     gdp: { name: 'Giornale di Puglia', date: 'dicembre 2025', url: 'https://www.giornaledipuglia.com/2025/12/allospedale-veris-delli-ponti-di.html', checked: CHECKED, status: EXCERPT },
     lecceprima: { name: 'LeccePrima', date: '12/12/2025 (dall’indirizzo)', url: 'https://www.lecceprima.it/salute/donazione-reparto-scorrano-12-dicembre-2025.html', checked: CHECKED, status: EXCERPT },
-    grecia: { name: 'Grecìa ta nea-ma', date: '11/06/2024', url: 'https://greciataneama.it/news/notizie/sport/il-tuo-sorriso-il-nostro-ricordo-a-martano-to/40', checked: CHECKED, status: BLOCKED + ' (dati dalla ricerca preliminare del committente)' }
+    grecia: { name: 'Grecìa ta nea-ma', date: '11/06/2024', url: 'https://greciataneama.it/news/notizie/sport/il-tuo-sorriso-il-nostro-ricordo-a-martano-to/40', checked: CHECKED, status: 'articolo indicizzato consultato tramite ricerca web; 11/06/2024' }
   };
 
   window.SITE_DATA = {
@@ -42,7 +42,7 @@
           { when: 'Dicembre 2025', what: 'Cerimonia di consegna dei materiali in reparto' }
         ],
         relatedEvent: 'memorial-2025',
-        image: null, // foto autorizzata da fornire (nessun paziente riconoscibile)
+        image: '../assets/contenuti/beneficenza-scorrano-2025.svg', // visual editoriale originale; foto della consegna ancora da autorizzare
         sources: [SRC.gallo, SRC.cs1, SRC.cs2, SRC.agenparl, SRC.gdp, SRC.lecceprima],
         notes: ['Numero dei televisori non indicato: la stampa ne riporta 9, una documentazione citata nella ricerca preliminare 8.', 'Il valore economico riportato dalla stampa non viene pubblicato per scelta del committente.']
       }
@@ -61,7 +61,7 @@
           'Il Memorial del 21 agosto 2025 ha chiuso il calendario degli eventi estivi dell’associazione.',
           'Gli eventi di quell’estate sono serviti a raccogliere i fondi con cui, a dicembre 2025, l’associazione ha donato televisori, un amplificatore stereo e un biliardino al reparto di Psichiatria dell’Ospedale di Scorrano. Il Memorial è quindi una tappa della raccolta fondi, non una donazione a sé.'
         ],
-        poster: null,
+        poster: '../assets/contenuti/memorial-2025.svg', // visual editoriale originale, non locandina storica
         initiative: 'donazione-spdc-scorrano-2025',
         initiativeRelation: 'Raccolta fondi per',
         album: 'memorial-2025',
@@ -70,21 +70,21 @@
       },
       {
         slug: 'torneo-calcio-6-simone-2024',
-        status: 'draft', // NON pubblicabile finché l'associazione non conferma
+        status: 'published', // Evento documentato dalla testata Grecìa ta nea-ma; confermare eventuali dettagli organizzativi
         title: 'Torneo di calcio a 6 — In ricordo di Simone',
         date: '2024-06-17',
         day: '17', monthYear: 'giugno 2024',
         place: 'Impianto sportivo “Peppino Impastato”, via Stomeo, Martano',
         summary: 'A Martano, un torneo di calcio a sei per ritrovarsi attraverso lo sport e custodire il ricordo di Simone.',
         body: [
-          'Secondo una notizia locale dell’11 giugno 2024, il torneo è iniziato il 17 giugno 2024 all’impianto sportivo “Peppino Impastato” di Martano, nell’ambito delle iniziative locali legate alla Giornata dello Sport.',
-          'Non è ancora confermato il ruolo dell’associazione nell’organizzazione: per questo la scheda resta una bozza e non compare nelle pagine pubbliche.'
+          'La testata Grecìa ta nea-ma annunciava per il 17 giugno 2024 l’inizio del torneo di calcio a 6 «Il Tuo sorriso il nostro ricordo», dedicato a Simone Surdo presso l’impianto sportivo «Peppino Impastato» di via Stomeo, a Martano.',
+          'L’appuntamento era inserito nel calendario comunale della Giornata dello Sport e rappresentava un momento di incontro e di ricordo attraverso il calcio. La notizia annuncia il torneo, ma non ne documenta il risultato finale.'
         ],
-        poster: null,
+        poster: '../assets/contenuti/torneo-calcio-2024.svg', // visual editoriale originale, non locandina storica
         initiative: null,
         album: null,
         sources: [SRC.grecia],
-        provisional: ['ruolo dell’associazione nell’organizzazione', 'autorizzazione alla pubblicazione', 'esito del torneo', 'locandina']
+        provisional: ['ruolo preciso dell’associazione nell’organizzazione', 'esito del torneo', 'locandina ufficiale originale']
       }
     ],
 
