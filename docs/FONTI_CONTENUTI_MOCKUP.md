@@ -1,6 +1,6 @@
 # Fonti dei contenuti del mockup (Fase A.2)
 
-> Ricerca del 14/10/2026. Tutti i testi del sito restano **da approvare con l'associazione**.
+> Ricerca del 14/10/2026. **Superato** da `RICERCA_FONTI_EVENTI_BENEFICENZA.md` (Fase A.3): il torneo 2024 ora è una bozza non pubblicata e l'album Memorial non ha più foto segnaposto. Tutti i testi del sito restano **da approvare con l'associazione**.
 
 ## 1. Limite della verifica (da leggere per primo)
 

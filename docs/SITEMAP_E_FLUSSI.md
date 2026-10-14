@@ -43,6 +43,8 @@ Nel prototipo statico le rotte sono simulate con file HTML e il parametro `?slug
 | `/foto/:slug` | `album.html?slug=memorial-2025` |
 | `/privacy` | `privacy.html` |
 | 404 | stesso file con slug inesistente → “non trovato” |
+| — (solo revisione) | `eventi.html?bozze=1`: mostra le bozze non pubblicate |
+| — (solo revisione) | `index.html?demo=carosello`: carosello con schede DEMO NON PUBBLICABILE |
 
 Arrivando sulla Home con un'ancora (`index.html#eventi`, cioè da una pagina interna) l'intro non parte: la pagina va subito alla sezione.
 

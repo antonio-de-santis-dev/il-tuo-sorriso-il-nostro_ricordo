@@ -2,7 +2,7 @@
 
 Sito dell'associazione di volontariato di Martano (LE).
 
-**Stato: Fase A.2 — prototipo navigabile completo** (branch `feature/completamento-mockup`). Questo repository contiene specifiche e mockup da approvare. Il codice applicativo (React + Node.js) verrà scritto solo dopo l'approvazione dei mockup.
+**Stato: Fase A.3 — prototipo con contenuti reali documentati** (branch `feature/contenuti-reali-mockup`). Questo repository contiene specifiche e mockup da approvare. Il codice applicativo (React + Node.js) verrà scritto solo dopo l'approvazione dei mockup.
 
 ## Documenti
 
@@ -15,7 +15,10 @@ Sito dell'associazione di volontariato di Martano (LE).
 | [docs/ARCHITETTURA_PROPOSTA.md](docs/ARCHITETTURA_PROPOSTA.md) | Bozza tecnica: contenuti, Google Drive, API |
 | [docs/SKILL_E_TOOL.md](docs/SKILL_E_TOOL.md) | Esame delle skill e dei tool proposti |
 | [docs/REVISIONE_MOCKUP.md](docs/REVISIONE_MOCKUP.md) | Revisione UX, accessibilità e prestazioni; prima/dopo della Fase A.2 |
-| [docs/FONTI_CONTENUTI_MOCKUP.md](docs/FONTI_CONTENUTI_MOCKUP.md) | Fonti, grado di verifica dei contenuti, asset mancanti |
+| [docs/RICERCA_FONTI_EVENTI_BENEFICENZA.md](docs/RICERCA_FONTI_EVENTI_BENEFICENZA.md) | Inventario fonti di eventi e beneficenza, stato di verifica (Fase A.3) |
+| [docs/ASSET_DA_RICHIEDERE.md](docs/ASSET_DA_RICHIEDERE.md) | Foto, locandine, conferme e autorizzazioni da chiedere all'associazione |
+| [docs/REPORT_CONTENUTI_MOCKUP.md](docs/REPORT_CONTENUTI_MOCKUP.md) | Report della Fase A.3: file, card, immagini, test, limiti |
+| [docs/FONTI_CONTENUTI_MOCKUP.md](docs/FONTI_CONTENUTI_MOCKUP.md) | Fonti della Fase A.2 (superato dal documento di ricerca) |
 
 ## Prototipo
 
@@ -35,7 +38,10 @@ npx serve -l 8765 design          # oppure: python3 -m http.server 8765 --direct
 | Catalogo foto | http://localhost:8765/mockup/foto.html |
 | Album | http://localhost:8765/mockup/album.html?slug=memorial-2025 |
 | Privacy | http://localhost:8765/mockup/privacy.html |
+| Revisione: bozze eventi | http://localhost:8765/mockup/eventi.html?bozze=1 |
+| Revisione: carosello a più card (DEMO) | http://localhost:8765/mockup/index.html?demo=carosello#beneficenza |
+| Album dimostrativo (funzioni galleria) | http://localhost:8765/mockup/album.html?slug=demo-album-grande |
 
 File principali in `design/mockup/`: `data.js` (catalogo contenuti), `site.js` (navbar, footer, schede comuni), `mockup.js` (Home), `pages.js` (pagine interne), `tokens.css`, `mockup.css`, `pages.css`.
 
-Test automatici: `design/tests/e2e.js` (istruzioni in testa al file). Screenshot in `design/screenshots/` (prefisso `a2-` per la Fase A.2).
+Test automatici: `design/tests/e2e.js` (istruzioni in testa al file). Screenshot in `design/screenshots/` (prefisso `a2-` per la Fase A.2, `a3-` per la Fase A.3).
