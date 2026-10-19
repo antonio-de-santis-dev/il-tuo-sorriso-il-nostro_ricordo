@@ -76,7 +76,7 @@
             <div><dt>Cosa è stato donato</dt><dd><ul>${i.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul></dd></div>
             ${i.purpose ? `<div><dt>Per cosa</dt><dd>${esc(i.purpose)}</dd></div>` : ''}
           </dl></section>
-          ${sourcesBox(i.sources)}
+          ${i.sources?.length ? sourcesBox(i.sources) : '<section class="sources"><h2>Fonte</h2><p>Presentazione fornita dall’associazione, pagina 4. Documento originale da rendere disponibile previa approvazione.</p></section>'}
         </div>
       </div></div>`;
       window.Sezioni?.posterZoom(root);
