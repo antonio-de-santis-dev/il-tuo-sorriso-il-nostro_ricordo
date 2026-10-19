@@ -22,6 +22,30 @@
   window.SITE_DATA = {
     initiatives: [
       {
+        slug: 'contributo-colposcopio-io-non-mollo', status: 'published', title: 'Un contributo per la diagnosi precoce', dateLabel: 'Data da confermare', date: '0000-01', place: 'Associazione Io Non Mollo',
+        summary: 'L\'associazione ha contribuito all\'acquisto di un colposcopio destinato alla diagnosi precoce, sostenendo l\'iniziativa promossa da Io Non Mollo.', items: ["Contributo all'acquisto di un colposcopio"], purpose: 'Sostenere strumenti per la prevenzione e la diagnosi precoce',
+        body: ["Tra le cause sostenute figura il contributo all'acquisto di un colposcopio per la diagnosi precoce, nell'ambito di un'iniziativa dell'associazione Io Non Mollo.","L'informazione è riportata nella presentazione ufficiale dell'associazione «Il Tuo Sorriso Il Nostro Ricordo» (pagina 4). La data e ulteriori dettagli dell'iniziativa non sono specificati nel documento."], relatedEvent: null, image: '../assets/contenuti/contributo-colposcopio-io-non-mollo.svg',
+        sources: [], notes: ['Fonte: presentazione fornita dall’associazione, pagina 4. Data e fotografie originali da confermare.']
+      },
+      {
+        slug: 'sostegno-fratres-martano', status: 'published', title: 'Un sostegno alla sede operativa FRATES Martano', dateLabel: 'Data da confermare', date: '0000-02', place: 'FRATES Martano',
+        summary: 'Un contributo per aiutare a mantenere operativa la sede FRATES sul territorio di Martano.', items: ["Copertura delle spese della sede operativa"], purpose: 'Sostegno alla continuità delle attività della sede sul territorio',
+        body: ["L'associazione ha sostenuto FRATES Martano contribuendo alla copertura delle spese necessarie per mantenere operativa la sede sul territorio.","La presentazione associativa descrive questo intervento tra le donazioni effettuate (pagina 4), senza precisare la data."], relatedEvent: null, image: '../assets/contenuti/sostegno-fratres-martano.svg',
+        sources: [], notes: ['Fonte: presentazione fornita dall’associazione, pagina 4. Data e fotografie originali da confermare.']
+      },
+      {
+        slug: 'sostegno-pediatria-lecce', status: 'published', title: 'Un gesto di vicinanza al reparto pediatrico di Lecce', dateLabel: 'Data da confermare', date: '0000-03', place: 'Ospedale di Lecce · Reparto Pediatrico',
+        summary: 'Sostegno all\'associazione interna del reparto pediatrico, guidata dalla primaria e affiancata da volontari.', items: ["Donazione a favore dell'associazione interna al reparto"], purpose: 'Supporto all\'attività solidale nel reparto pediatrico',
+        body: ["Il documento dell'associazione racconta un contributo destinato all'associazione interna del reparto pediatrico dell'Ospedale di Lecce, guidata dalla primaria con il supporto dei volontari.","La cifra riportata nella descrizione della pagina 4 differisce da quella rappresentata nel grafico a pagina 5. Per evitare di pubblicare un importo ambiguo, il valore resta da verificare con l'associazione."], relatedEvent: null, image: '../assets/contenuti/sostegno-pediatria-lecce.svg',
+        sources: [], notes: ['Fonte: presentazione fornita dall’associazione, pagina 4. Data e fotografie originali da confermare.']
+      },
+      {
+        slug: 'piccolo-guerriero-sostegno', status: 'published', title: 'Una serata per Il Piccolo Guerriero', dateLabel: 'Data da confermare', date: '0000-04', place: 'Luogo da confermare',
+        summary: 'Una serata solidale organizzata per sostenere un bambino impegnato in un lungo percorso di cure oncologiche.', items: ["Raccolta solidale attraverso una serata dedicata"], purpose: 'Sostenere il percorso di cura del bambino e la sua famiglia',
+        body: ["Fra le iniziative benefiche documentate dall'associazione figura «Il Piccolo Guerriero», una serata organizzata per sostenere un bambino che, secondo il documento, aveva affrontato 73 cicli di cure.","Per tutelare la riservatezza del minore, non vengono riportati dati identificativi. La data e il luogo dell'iniziativa non sono specificati nel documento."], relatedEvent: null, image: '../assets/contenuti/piccolo-guerriero-sostegno.svg',
+        sources: [], notes: ['Fonte: presentazione fornita dall’associazione, pagina 4. Data e fotografie originali da confermare.']
+      },
+      {
         slug: 'donazione-spdc-scorrano-2025',
         status: 'published',
         title: 'Un gesto concreto per il reparto di Psichiatria di Scorrano',
@@ -44,7 +68,7 @@
         relatedEvent: 'memorial-2025',
         image: '../assets/contenuti/beneficenza-scorrano-2025.svg', // visual editoriale originale; foto della consegna ancora da autorizzare
         sources: [SRC.gallo, SRC.cs1, SRC.cs2, SRC.agenparl, SRC.gdp, SRC.lecceprima],
-        notes: ['Numero dei televisori non indicato: la stampa ne riporta 9, una documentazione citata nella ricerca preliminare 8.', 'Il valore economico riportato dalla stampa non viene pubblicato per scelta del committente.']
+        notes: ['Il PDF dell’associazione indica 9 televisori; precedenti appunti citavano 8. Verificare il numero prima della pubblicazione.', 'Il valore economico riportato dalla stampa non viene pubblicato per scelta del committente.']
       }
     ],
 
@@ -108,7 +132,7 @@
        mode 'mockup'     → iniziative reali + schede DEMO, controlli sempre visibili (predefinita in questa fase)
        mode 'produzione' → solo iniziative pubblicate; frecce e indicatori nascosti solo se la card è una
        (anteprima senza modificare questo file: index.html?carosello=produzione) */
-    carousel: { mode: 'mockup' },
+    carousel: { mode: 'produzione' },
 
     /* Schede DEMO del carosello: servono solo a verificarne il funzionamento.
        Non sono attività dell'associazione e non hanno articolo collegato. */
