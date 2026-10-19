@@ -13,7 +13,7 @@
   const editorial = notes => notes?.length ? `<div class="note-prov"><strong>Note redazionali (non pubblicabili):</strong><ul>${notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>` : '';
 
   /* Raggruppa per anno (dal più recente) */
-  const byYear = list => list.reduce((m, x) => { const y = x.date.slice(0, 4); (m.get(y) || m.set(y, []).get(y)).push(x); return m; }, new Map());
+  const byYear = list => list.reduce((m, x) => { const y = x.date.startsWith('0000') ? 'Da datare' : x.date.slice(0, 4); (m.get(y) || m.set(y, []).get(y)).push(x); return m; }, new Map());
   const yearNav = years => years.length > 1 ? `<nav class="year-nav" aria-label="Vai all’anno"><ul>${years.map(y => `<li><a href="#anno-${y}">${y}</a></li>`).join('')}</ul></nav>` : '';
   const zoomBtn = (src, alt, label) => `<button type="button" class="poster-zoom" data-zoom="${esc(src)}" data-zoom-alt="${esc(alt)}" aria-label="Ingrandisci l’immagine: ${esc(label)}"><img src="${esc(src)}" alt="${esc(alt)}"><span class="poster-zoom__hint" aria-hidden="true">Ingrandisci</span></button>`;
   const thumb = (src, phClass, phLabel) => src ? `<img src="${esc(src)}" alt="">` : S.ph(phClass, phLabel);
@@ -27,7 +27,7 @@
     } else {
       const groups = byYear(items);
       list.outerHTML = `
-        <p class="archive-summary"><b>${items.length}</b> ${items.length === 1 ? 'iniziativa documentata' : 'iniziative documentate'} · ${items.length === 1 ? esc(items[0].dateLabel.toLowerCase()) : `dal ${esc(items[items.length - 1].dateLabel.toLowerCase())} al ${esc(items[0].dateLabel.toLowerCase())}`}</p>
+        <p class="archive-summary"><b>${items.length}</b> ${items.length === 1 ? 'iniziativa documentata' : 'iniziative documentate'} · ${items.length === 1 ? esc(items[0].dateLabel.toLowerCase()) : '5 iniziative raccontate nella presentazione dell’associazione'}</p>
         ${yearNav([...groups.keys()])}
         ${[...groups].map(([y, list]) => `
         <section class="year" id="anno-${y}" aria-labelledby="y-${y}">
